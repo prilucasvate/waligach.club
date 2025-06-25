@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+  <style>
+    h1 {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      font-size: 66px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #f788ba, #ff65a3, #67e7ea);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
+      animation: fadeInUp 1s ease-out;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      /*background: radial-gradient(120deg, 	#d2f1ff 0%, #ffffff 100%);*/
+      
+      background-image: 
+        radial-gradient(farthest-corner at 90% 65%, #f289a5c3, rgba(239, 142, 219, 0.59), rgba(254, 254, 254, 0.727), transparent 90%),
+        radial-gradient(farthest-corner at 5% 5%, rgba(207, 75, 251, 0.604), #ffffffbc, transparent 75%),
+        radial-gradient(farthest-corner at 5% 80%, rgba(218, 225, 12, 0.826),transparent 50%),
+        radial-gradient(farthest-corner at 70% 20%, 	#2bb3f7c7 0%, #ffffff9f 100%); 
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: 100% 100%;
+      box-sizing: border-box;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 30px;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 3px solid #f514b9a3;
+        padding: 8px 12px;
+        text-align: center;
+
+    }
+    th {
+        background: #f6eef9e5;
+    }
+    td span {
+        font-weight: bold;
+    }
+    .container {
+      padding: 0 50;
+      margin: 0;
+      width: calc(100vw - 40px); ;
+    }
+    img {
+      width: 90%;
+      height: auto;
+      object-fit: contain;
+      display: block;         /*  讓圖片可 margin: auto */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      margin: auto ;
+      margin-bottom: 20px;
+    }
+    .day-container {
+      background: rgba(255, 255, 255, 0.85);  /* 白色霧底 */
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin: 30px auto;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .day-title {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #d943aa;
+      font-weight: bold;
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 18px;
+      margin: 0 auto;
+    }
+
+    .schedule-table th, .schedule-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .schedule-table thead {
+      background: #de3fc6;
+      color: #000;
+    }
+
+    .note {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #cc2222;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .comment-box {
+      margin: 60px auto;
+      padding: 30px;
+      width: 90%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .comment-box textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    .comment-box button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #ffa0d6, #a0e8ff);
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .comment-list {
+      margin-bottom: 20px;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #fefefe;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+    }
+
+    .comment {
+      padding: 8px;
+      margin-bottom: 6px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+  </style>
+</head>
+
+<!-- ★ -->
+<body>
+  <div class="container">
+      <h1>無他 ，惟手首爾</h1>
+      
+      <img src="{{ url_for('static', filename='D0.jpg') }}" alt="korea" style="width: 85%; height: auto;">
+      <img src="{{ url_for('static', filename='D1.jpg') }}" alt="korea" style="width: 85%; height: auto;">
+      <img src="{{ url_for('static', filename='D23.jpg') }}" alt="korea" style="width: 85%; height: auto;">
+      <img src="{{ url_for('static', filename='D45.jpg') }}" alt="korea" style="width: 85%; height: auto;">
+      <img src="{{ url_for('static', filename='D6.jpg') }}" alt="korea" style="width: 85%; height: auto;">
+      <h3 style="text-align: center; margin: 0 0 10 0;color: #91848a; font-size: 20px;">
+        ★ slides made by ariel 
+      </h3>
+      <!-- 你可以把下面改成 table、純文字或 <img> -->
+      <!--  每日行程外層 container -->
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/15 Day-1 落地成盒</h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">07:00</td><td>NTPU 正門</td><td>機場接送</td></tr>
+            <tr><td>07:30</td><td><a href="https://www.google.com/maps/place/%E6%A9%9F%E5%A0%B4%E7%AC%AC%E4%B8%80%E8%88%AA%E5%BB%88/@25.0817392,121.2342726,17z/data=!3m1!4b1!4m6!3m5!1s0x34429fbf7bafaf81:0xd6284b8a3cc0fce6!8m2!3d25.0817344!4d121.2391435!16s%2Fg%2F155qw8mn?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">抵達 TPE</a></td><td>地鐵卡 網路卡喔 </td></tr>
+            <tr><td>08:30</td><td>brunch</td><td></td></tr>
+            <tr><td style="color:rgb(222, 2, 2);">10:30</td><td>搭機 TPE</td><td>易達斯 ZE882</td></tr>
+            <tr><td>14:00</td><td><a href="https://www.google.com/maps/place/%EC%9D%B8%EC%B2%9C%EA%B3%B5%ED%95%AD1%ED%84%B0%EB%AF%B8%EB%84%90%EC%97%AD/@37.4469229,126.4616872,13.67z/data=!4m6!3m5!1s0x357b9b80d301d7cd:0xea818e92ac52c926!8m2!3d37.4475951!4d126.4580803!16s%2Fm%2F06zlmtq?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">抵達 ICN</a></td><td>搭地鐵</td></tr>
+            <tr><td>16:00</td><td><a href="https://www.google.com/maps/dir//9-11+Wausan-ro+35-gil,+Mapo-gu,+Seoul,+%E5%8D%97%E9%9F%93/@37.5555515,126.9268647,17z/data=!3m1!4b1!4m9!4m8!1m0!1m5!1m1!1s0x357c98c1c92858b7:0x5de6da05397a2d2a!2m2!1d126.9294396!2d37.5555473!3e9?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">check-in 飯店</a></td><td>休息</td></tr>
+            <tr><td>18:00</td><td>弘大吃晚餐</td><td>free time</td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 地鐵需購票，記得帶卡 </br>
+          ※ 去之前先檢查證件、護照...</br>
+          ※ 來回機場都在 T1</br>
+          ※ 舒服穿
+        </div>
+
+      </div>
+      <!-- ---------D2------------>
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/16 Day-2 時尚大考驗</h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">10:00</td><td>飯店出門</td><td></td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/place/%E5%BB%A3%E8%97%8F%E5%B8%82%E5%A0%B4/@37.5697316,126.9961134,17z/data=!4m10!1m2!2m1!1z5buj6JeP5biC5aC0!3m6!1s0x357ca2ed7e74759b:0xd656a34831089f44!8m2!3d37.5700398!4d126.9996036!15sCgzlu6Pol4_luILloLRaECIO5bujIOiXjyDluILloLSSARJ0cmFkaXRpb25hbF9tYXJrZXSqATYQATIeEAEiGkTA5iDmQhYC9hXb19OWsdY-LVicpttwlYVMMhIQAiIO5bujIOiXjyDluILloLTgAQA!16s%2Fm%2F012r1x6q?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">廣藏市場</a></td><td>生魚片</td></tr>
+            <tr><td></td><td>Onion Cafe</td><td>麵包 咖啡</td></tr>
+            <tr><td>12:00</td><td>--- 中午 ---</td><td></td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/place/%E5%8C%97%E6%9D%91%E9%9F%93%E5%B1%8B%E6%9D%91/@37.5814738,126.980081,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca2daaff8c14f:0xcdbcbaa9ffc9e59a!8m2!3d37.5814696!4d126.9849519!16s%2Fm%2F043pdws?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">北村韓屋村</a></td><td>韓服</td></tr>
+            <tr><td>14:00</td><td></</td><td>搭地鐵</td></tr>
+            <tr><td></td><td>明洞逛街</td><td>買交換衣服</td></tr>
+            <tr><td></td><td>晚餐</td><td>明洞...</td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/dir//9-11+Wausan-ro+35-gil,+Mapo-gu,+Seoul,+%E5%8D%97%E9%9F%93/@37.5555515,126.9268647,17z/data=!3m1!4b1!4m9!4m8!1m0!1m5!1m1!1s0x357c98c1c92858b7:0x5de6da05397a2d2a!2m2!1d126.9294396!2d37.5555473!3e9?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">回飯店</a></td><td>free time</td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 穿黑白灰喔</br>
+          ※ 要買交換的衣服
+        </div>
+
+      </div>
+      <!-- --------------D2end-------------------->
+      <!-- ---------D3------------>
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/17 Day-3 熱天-樂天</h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">09:00</td><td>飯店出門</td><td>搭地鐵</td></tr>
+            <tr><td>10:30</td><td><a href="https://www.google.com/maps/place/%E6%A8%82%E5%A4%A9%E4%B8%96%E7%95%8C/@37.5200931,126.4404776,10z/data=!4m10!1m3!11m2!2stAS9o4D3Qtea1imKkgorpA!3e3!3m5!1s0x357ca5a7250efe81:0x433df2c1fec03b98!8m2!3d37.5111158!4d127.098167!16zL20vMDNqbGo5?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">抵達樂天世界</a></td><td>先找好票喔喔 </td></tr>
+            <tr><td>08:30</td><td>brunch</td><td></td></tr>
+            <tr><td>12:00</td><td>--- 中午 ---</td><td></td></tr>
+            <tr><td>17:30</td><td>前往晚餐</td><td>搭地鐵</td></tr>
+            <tr><td>18:30</td><td><a href="https://www.google.com/maps/place/%E9%A6%AC%E5%A0%B4%E6%B4%9E%E7%95%9C%E7%94%A2%E5%93%81%E5%B8%82%E5%A0%B4+%E5%B9%B3%E6%97%A5%E9%96%8B%E5%B7%A5+03:00~23:00+%E5%85%AC%E4%BC%91%E5%9C%A8%E6%AF%8F%E6%9C%88%E7%AC%AC%E4%B8%80%E3%80%81%E4%B8%89%E9%80%B1%E9%80%B1%E6%97%A5/@37.5691285,127.0382806,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca4aa8ea8fc9f:0xc064f380f42b731c!8m2!3d37.5691243!4d127.0408555!16s%2Fg%2F11dyzfrtqf?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">馬場洞市場</a></td><td>吃韓牛</td></tr>
+            <tr><td>20:00</td><td><a href="https://www.google.com/maps/dir//9-11+Wausan-ro+35-gil,+Mapo-gu,+Seoul,+%E5%8D%97%E9%9F%93/@37.5555515,126.9268647,17z/data=!3m1!4b1!4m9!4m8!1m0!1m5!1m1!1s0x357c98c1c92858b7:0x5de6da05397a2d2a!2m2!1d126.9294396!2d37.5555473!3e9?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">回飯店</a></td><td>free time</td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 制服日 </br>
+          ※ 要確定樂天票喔
+        </div>
+
+      </div>
+      <!-- --------------D3end-------------------->
+       <!-- ---------D4------------>
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/18 Day-4 不要梨泰院</h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">10:00</td><td>出門</td><td></td></tr>
+            <tr><td>12:00</td><td>--- 中午 ---</td><td></td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/place/Seongsu-dong+2(i)-ga,+%E5%9F%8E%E6%9D%B1%E5%8D%80%E9%A6%96%E7%88%BE%E5%8D%97%E9%9F%93/@37.5397464,127.0375922,14z/data=!3m1!4b1!4m6!3m5!1s0x357ca493a3fc0081:0xd98c70910b3fbde9!8m2!3d37.5406846!4d127.0566319!16s%2Fm%2F043rlyx?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D target="_blank">聖水洞</a></td><td>逛逛</td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/dir//9-11+Wausan-ro+35-gil,+Mapo-gu,+Seoul,+%E5%8D%97%E9%9F%93/@37.5555515,126.9268647,17z/data=!3m1!4b1!4m9!4m8!1m0!1m5!1m1!1s0x357c98c1c92858b7:0x5de6da05397a2d2a!2m2!1d126.9294396!2d37.5555473!3e9?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">回飯店</a></td><td>free time</td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 真是悠閒的一天呢 </br>
+          ※ 美式街頭風
+        </div>
+
+      </div>
+      <!-- --------------D4end-------------------->
+       <!-- ---------D5------------>
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/19 Day-5 惟手首爾大成發</h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">10:00</td><td>出門</td><td></td></tr>
+            <tr><td></td><td>弘大逛街</td><td></td></tr>
+            <tr><td>12:00</td><td>--- 中午 ---</td><td></td></tr>
+            <tr><td>14:00</td><td><a href="https://www.google.com/maps/place/%E9%A6%96%E7%88%BE%E5%A1%94/@37.5511736,126.9833557,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca257a88e6aa9:0x5cf8577c2e7982a5!8m2!3d37.5511694!4d126.9882266!16zL20vMDJxcGYx?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">首爾塔</a></td><td>看夜景</td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/dir//9-11+Wausan-ro+35-gil,+Mapo-gu,+Seoul,+%E5%8D%97%E9%9F%93/@37.5555515,126.9268647,17z/data=!3m1!4b1!4m9!4m8!1m0!1m5!1m1!1s0x357c98c1c92858b7:0x5de6da05397a2d2a!2m2!1d126.9294396!2d37.5555473!3e9?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">回飯店</a></td><td>free time</td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 看看倒底穿了啥 </br>
+          ※ 要回去了....
+        </div>
+
+      </div>
+      <!-- --------------D5end-------------------->
+       <!-- ---------D6------------>
+      <div class="day-container">
+        <!-- Day 標題 -->
+        <h2 class="day-title">6/20 Day-6 身為一道彩虹 ? </h2>
+        <!-- 行程表格 -->
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>活動 / 地點</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:rgb(222, 2, 2);">10:00</td><td>出門</td><td></td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/place/%E6%A2%A8%E8%8A%B1%E5%A5%B3%E5%AD%90%E5%A4%A7%E5%AD%B8/@37.561863,126.944259,17z/data=!3m1!4b1!4m6!3m5!1s0x357c988459902d69:0xf2536b3850f9d80d!8m2!3d37.5618588!4d126.9468339!16zL20vMDY0Z182?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">梨花女子大學</a></td><td> >< </td></tr>
+            <tr><td>12:00</td><td>--- 中午 ---</td><td></td></tr>
+            <tr><td></td><td><a href="https://www.google.com/maps/place/%E6%B1%9D%E7%9F%A3%E5%B3%B6%E6%BC%A2%E6%B1%9F%E5%85%AC%E5%9C%92/@37.5267106,126.8584935,13z/data=!4m10!1m2!2m1!1z6Z-T5ZyL6aaW54i-55qE5ryi5rGf5YWs5ZyS!3m6!1s0x357c9f3b03c4b7ef:0xa4d8869ebf8d452c!8m2!3d37.5267106!4d126.9347112!15sChvpn5PlnIvpppbniL7nmoTmvKLmsZ_lhazlnJJaISIf6Z-T5ZyLIOmmlueIviDnmoQg5ryi5rGfIOWFrOWckpIBBHBhcmuaASNDaFpEU1VoTk1HOW5TMFZKUTBGblNVUjRObVYyYlVWUkVBRaoBWxABKhEiDemfk-WciyDpppbniL4oRTIfEAEiG2x3u4UZ4F5pnh908oAP3GMF96qDeR6cD9SqFjIjEAIiH-mfk-WciyDpppbniL4g55qEIOa8ouaxnyDlhazlnJLgAQD6AQQIABAg!16s%2Fg%2F122cc2sw?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">漢江公園</a></td><td> 走走 </td></tr>
+            <tr><td style="color:rgb(222, 2, 2);">22:00</td><td><a href="https://www.google.com/maps/place/%EC%9D%B8%EC%B2%9C%EA%B3%B5%ED%95%AD1%ED%84%B0%EB%AF%B8%EB%84%90%EC%97%AD/@37.4469229,126.4616872,13.67z/data=!4m6!3m5!1s0x357b9b80d301d7cd:0xea818e92ac52c926!8m2!3d37.4475951!4d126.4580803!16s%2Fm%2F06zlmtq?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">抵達 ICN</a></td><td>證件 護照喔 </td></tr>
+            <tr><td>00:30</td><td>起飛</td><td>虎航 IT603</td></tr>
+            <tr><td>00:00</td><td>--- 6/21 ---</td><td></td></tr>
+            <tr><td>02:15</td><td><a href="https://www.google.com/maps/place/%E6%A9%9F%E5%A0%B4%E7%AC%AC%E4%B8%80%E8%88%AA%E5%BB%88/@25.0817392,121.2342726,17z/data=!3m1!4b1!4m6!3m5!1s0x34429fbf7bafaf81:0xd6284b8a3cc0fce6!8m2!3d25.0817344!4d121.2391435!16s%2Fg%2F155qw8mn?entry=ttu&g_ep=EgoyMDI1MDYxMC4xIKXMDSoASAFQAw%3D%3D" target="_blank">抵達 TPE</a></td><td> </td></tr>
+            <tr><td></td><td>掰 ~</td><td> 回家 ? </td></tr>
+          </tbody>
+        </table>
+        <!-- 注意事項 -->
+        <div class="note">
+          ※ 穿一套彩虹 ...  </br>
+          ※ 去之前先檢查證件、護照 </br>
+          ※ 看有啥想遺留在韓國的 
+        </div>
+
+      </div>
+      <!-- --------------D6end-------------------->
+      <div class="comment-box" id="comment-box">
+        <h3>💬 留言板</h3>
+      
+        <!-- 留言顯示區 -->
+        <div class="comment-list" id="commentList">
+          {% for msg in messages %}
+            <div class="comment"> {{ msg }}</div>
+          {% endfor %}
+        </div>
+      
+        <!-- 留言輸入區 -->
+        <textarea id="messageInput" placeholder="留下你的留言..." rows="3"></textarea>
+        <br>
+        <button onclick="submitMessage()">送出留言</button>
+      </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();  // 一開始就連線
+
+    //  一次性監聽來自 server 的留言廣播
+    socket.on("broadcast_comment", data => {
+      const list = document.getElementById("commentList");
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerText = `${data.user}:${data.message}`;
+      list.appendChild(div);
+      list.scrollTop = list.scrollHeight;
+    });
+
+    //  按下送出留言按鈕時的行為
+    function submitMessage() {
+      const input = document.getElementById("messageInput");
+      const message = input.value.trim();
+      const user = localStorage.getItem("userName");
+      if (!message || !user) return;
+
+      socket.emit("new_comment", {
+        user: user,
+        message: message
+      });
+
+      input.value = "";
+    }
+  </script>
+    
+</body>
+</html>
+  
