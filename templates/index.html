@@ -113,10 +113,11 @@
 
     /* ▼ 編號 */
     .index-label{
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
       text-align:right;
-      font-weight:700;
+      font-weight:900;
       white-space:nowrap;        /* 避免 10. 換行 */
-      color:#444;
+      color:#4c3855;;
     }
 
     /* 文字：拿掉 width，讓 1fr 真的撐滿 */
@@ -166,7 +167,7 @@
       font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
       border: none;
       border-radius: 999px;
-      background: linear-gradient(to right, #ee7ba3, #eb9ab6);
+      background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
       color: white;
       font-weight: bold;
       cursor: pointer;
@@ -270,7 +271,7 @@
     }
     #mainButton {
       font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
-      background: linear-gradient(to right, #eb7aa1, #ee97b5); 
+      background: linear-gradient(to right, #ff42d5db, #a49df6ee); 
       font-size: 30px;
       display: block;              
       color: white;
@@ -362,7 +363,7 @@
 
     .switch-user-button {
       font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
-      background: linear-gradient(to right, #f99ab8, #fbbbce);
+      background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
       color: white;
       font-weight: bold;
       font-size: 24px;
@@ -415,6 +416,200 @@
       transition: transform 0.2s ease-in-out;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
+    /* -----------------------------for repo start--------------------------------- */
+    #repository-body .option-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      column-gap: 12px;
+      padding: 4px 0;
+      font-size: 32px;
+      line-height: 1.35;
+      width: 100%;
+      box-sizing: border-box;
+      white-space: nowrap;
+      align-items: center;
+    }
+    
+    /* 1. 浮動開關按鈕 FAB  */
+    .fab{
+      position:fixed;
+      right:3.5rem;                         /* 距離右下角 */
+      bottom:2.5rem;
+      z-index:60;
+      width: 20vw;
+      height: 20vw;
+      max-width: 160px;
+      min-width: max-content;
+      max-height: 160px;
+      min-height: max-content;
+      border: none;
+      border-radius: 50%;
+      font-size: clamp(40px, 12vw, 80px); line-height:1;    /* icon 大小 */
+      display:flex; align-items:center; justify-content:center;
+
+      color:#fff; cursor:pointer;
+      background:linear-gradient(135deg,#ff8ac2,#7dd3fc);
+      box-shadow:0 4px 12px rgba(0,0,0,.25);
+      transition:transform .2s;
+    }
+    .fab:active{ transform:scale(.95); }
+
+    /* 2. 抽屜 Drawer（統一右側滑出） */
+    .drawer{
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      position:fixed; top:0; right:0; bottom:0;
+      width:320px;                /* 桌機寬度 */
+      max-width:85vw;             /* 手機自適應 */
+      background:#ffffffb4;       /* 半透明白 */
+      backdrop-filter:blur(8px);  /* 毛玻璃 */
+      box-shadow:-4px 0 12px rgba(0,0,0,.2);
+      display:flex; flex-direction:column;
+      transform:translateX(100%); /* 初始藏在右邊 */
+      /* animation speed curve       */
+      transition:transform 1s cubic-bezier(.25,.8,.25,1),  
+             opacity   1s cubic-bezier(.25,.8,.25,1);
+      opacity:0;
+      z-index:55;
+    }
+    .drawer.open{ transform:translateX(0); opacity:1;  }
+    .drawer-header{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 16px;
+      border-bottom:1px solid #e4e4e4;
+    }
+    .drawer-header h3{
+      flex:1;                       
+      font-size:32px;
+      display:flex; 
+      align-items:center; 
+      gap:4px;
+      margin:0;
+      color: #17b33a;
+
+    }
+    .drawer-footer{
+      display:flex;
+      gap:10px;
+      padding:12px 16px;
+      border-top:1px solid #e4e4e4;
+     
+    }
+    .drawer-footer input{
+      flex:1 1 auto;          /* 最大化填滿寬度 */
+      min-width:0;            /* 防止 flex 溢出 */
+      padding:8px 10px;
+      border:1px solid #d0d0d0;
+      border-radius:6px;
+      font-size:.95rem;
+      width:auto !important;                     /* 覆蓋全域 input{width:100%} */
+     
+    }
+    .drawer-footer button{
+      flex:0 0 auto;          /* ★ 讓按鈕保持自身寬度 */
+      padding:0 20px;
+      border:none; border-radius:6px;
+      background:#d8d6ff;
+      font-weight:600;
+      cursor:pointer;
+      width:auto !important;       /* 只用自己的字寬 */
+    }
+    /* ─── 每個 item 行 ─── */
+    .item-li{
+      display:flex; align-items:center; gap:8px;
+      padding:4px 0;
+    }
+    .add-btn{
+      width:32px; height:32px;               /* 比原來 28px 稍大，視覺更剛好 */
+      border:none; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;  /* 完全置中關鍵 */
+      line-height:1;         /* ＋ 號大小 & 去掉行高干擾 */
+      font-size: 28px;
+      font-weight: 400;
+      padding:0; cursor:pointer;
+      background:#ff8ac2;
+      color:#fff;
+      box-shadow:0 2px 6px rgba(0,0,0,.15);
+      margin-left:auto;
+    }
+    .item-li.disabled .add-btn{ display:none; }
+    /* ---------------------------- */
+    .icon-btn{
+      display:flex;align-items:center;justify-content:center;  /* ★ 完全置中 */
+      width:36px;height:36px;padding:0;
+      border:none;border-radius:50%;background:#d9d3d3;
+      font-size:20px;line-height:1;cursor:pointer;
+      font-weight: bold;
+    }
+
+    /* 滾動內容區 */
+    #repository-body{ flex:1; overflow-y:auto; padding:8px 16px; }
+
+    /* 3. 半透明遮罩  */
+    .backdrop{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.3);
+      opacity:0; pointer-events:none;
+      transition:opacity .35s;
+      z-index:50;
+    }
+    .backdrop.show{ opacity:1; pointer-events:auto; }
+
+    /*  4. 列表樣式與已加入灰化  */
+    .folder-header{ /* 手風琴標題 */
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center;
+      padding:6px 0; 
+      cursor:pointer; 
+      font-weight:600;
+      font-size:28px;
+      color: #c60ef3;
+    }
+    .folder-header .count{ color:#888; font-weight:400; font-size:.9rem; }
+    .item-li{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; }
+    .item-li.disabled{ opacity:.35; cursor:pointer; }
+    .add-btn{ background:none; border:none; cursor:pointer; color:#ff66a5;}
+    .hidden{display:none;}
+
+    .del-btn{
+      width:32px;height:32px;margin-left:6px;
+      border:none;border-radius:50%;background:#ff8484;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:16px;
+      font-weight: bold;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      will-change: transform, box-shadow;
+    }
+    .del-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .del-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset;
+    }
+    /* 未加入 option：黑字（或你原先的顏色） */
+    .item-active  .option-text { color:#4c3855;; }
+    /* 已加入 option：改成灰字 + 降低不透明度 */
+    .item-inactive .option-text { color:#8b8b8b; opacity:.55; }
+
+    /* 讓整列都能點；hover 時加點回饋 */
+    .selectable-row{
+    cursor:pointer;
+    transition:background .12s;
+    padding:4px 0;
+    display:grid;
+    grid-template-columns: 1fr 46px; /* 文字 / 刪除 */
+    column-gap:12px;
+  }
+
+    @media (hover:hover){
+      .selectable-row:hover{ background:rgba(0,0,0,.05); }
+    }
+    /* ---------------------repo end ---------------------------------------------- */
     /* --------for travel-------- */
     .title-row{
       display: flex;
@@ -435,7 +630,6 @@
     }
     /* ------------for tarvel--------------- */
     @media (max-width: 480px) {
-      .travel-btn{ font-size:20px; padding:6px 16px; }
       h1, h2 {
         font-size: 20px;
         text-align: center;
@@ -447,7 +641,22 @@
         font-size: 18px;
       }
     }
-    
+    @media (max-width: 767px){
+      .drawer{
+        width:85vw;
+        max-width:85vw;
+        min-width:320px;
+      }
+    }
+
+    /* 桌機：展開一半，最大 640px，最小 320px */
+    @media (min-width: 768px){
+      .drawer{
+        width:70vw;          /* ⇦ 佔視窗寬度 70% */
+        max-width:900px;     /* 可選上限，超大螢幕時抽屜不會過寬 */
+        min-width:320px;
+      }
+    }
 
     @keyframes fadeInUp {
       from {
@@ -488,11 +697,11 @@
   <div class="container">
     <div class="title-row">
       <h1>欸要吃什麼？</h1>
-      <button id="travelBtn"
+      <!-- <button id="travelBtn"
               class="fancy-button travel-btn"
               onclick="location.href='/travel'">
               <img src="{{ url_for('static', filename='korea.png') }}" alt="korea" style="width: 25px; height: auto;">
-      </button>
+      </button> -->
     </div>
     <!-- <h1>欸要吃什麼？</h1>
     <button class="fancy-button draw-control-button"
@@ -501,20 +710,45 @@
         旅遊時間表
     </button> -->
      <!-- ★ 看哪裡能用 -->
+    <!-- ----------------------for repo start------------------------------------- -->
+    <!-- 1. 浮動按鈕：保持不動 -->
+    <button id="repository-btn" class="fab" aria-label="倉庫">📦 </button>
+
+    <!-- 2. 抽屜容器 -->
+    <div id="repository-drawer" class="drawer hidden">
+      <div class="drawer-header">
+        <h3>📦 我的倉庫 <span id="folder-count"></span></h3>
+        <button id="drawer-close" class="icon-btn">--</button>
+      </div>
+
+      <!-- 捲動內容 -->
+      <div id="repository-body"></div>
+
+      <!--新增資料夾 -->
+      <div class="drawer-footer">
+        <input id="new-folder-name" placeholder="新增資料夾名稱">
+        <button id="add-folder">＋ 新增資料夾</button>
+      </div>
+    </div>
+
+    <!-- 3. 遮罩（點擊可關閉） -->
+    <div id="drawer-backdrop" class="backdrop hidden"></div>
+
+    <!-- -------------------repo end---------------------------------------------- -->
     <img src="{{ url_for('static', filename='random.png') }}" alt="random">
     <br>
     <div>
       <input id="newOption" type="text" placeholder="加個選項">
-      <button class="fancy-button" onclick="addOption()">➕️加進選項吧 ~</button>
-      <button class="fancy-button" onclick="confirmReset()" >🔄全部重設 !</button>
+      <button class="fancy-button" onclick="addOption()">加進選項吧 ~</button>
+      <button class="fancy-button" onclick="confirmReset()" >全部重設 !</button>
     </div>
 
     <h2 class="gradient-title" >目前選項：</h2>
     <ul id="optionList"></ul>
     <div class="draw-controls" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0;">
-      <button id="quickDrawBtn" onclick="quickDraw()" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #e5c062eb, #efbe42dd); ">⚡️快速抽</button>
-      <button id="mainButton" class="fancy-button" onclick="draw()">🎲幫我選吧 !!</button>
-      <button onclick="toggleLock()" id="lockBtn" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #a4a1e4f1, #9690e7ee); ">🔒鎖定</button>
+      <button id="quickDrawBtn" onclick="quickDraw()" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #e5c062eb, #efbe42dd); ">快速抽</button>
+      <button id="mainButton" class="fancy-button" onclick="draw()">幫我選吧 !!</button>
+      <button onclick="toggleLock()" id="lockBtn" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #a4a1e4f1, #9690e7ee); ">鎖定</button>
     </div>
     <p id="loadingText" style="display:none; text-align:center; font-size:24px; color:#888;"></p>
     <h2 id="result" >我來幫你選 ! </h2>
@@ -541,8 +775,8 @@
 
       <ul id="online-list" style="padding-left:0;"></ul>
     </div>
-    <h4 style="color:rgba(176, 175, 175, 0.889);font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif; text-align: center;"> ★ made by waligach in June 2025 </h4>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <h4 style="color:rgba(176, 175, 175, 0.889);font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif; text-align: center;"> ★ made by waligach & gpt plus in June 2025 </h4>
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
     <script>
       const socket = io();     //  一開始就連線
     </script>
@@ -616,7 +850,7 @@
       //-------------------------
       
       function confirmReset() { //reset warning 
-        const confirmed = confirm("確定要清空所有選項嗎？這個動作無法復原！");
+        const confirmed = confirm("這會清空所有選項喔! 確定嗎？");
         if (confirmed) { 
           reset();  // 呼叫原本的 reset()
         }
@@ -817,25 +1051,275 @@
       }
       //--------quick draw end----user2option ------------
       async function addOnlineUsersToOptions() {
-        await fetch("/reset_options", { method: "POST" }); //clear
+        if (!confirm("這會清空之前所有選項只剩用戶喔! 確定嗎？")) return;
+        // 清空選項 reset() 
+        await reset();  
         // 再抓目前在線使用者
-        const listItems = document.querySelectorAll("#online-list li");
-        const usernames = Array.from(listItems).map(li => li.textContent.trim());
-        // 將每位使用者加進選項
-        for (const name of usernames) {
-          await fetch("/add_option", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ option: name })
-          });
-        }
+        const res = await fetch("/add_online_users", { method: "POST" });
+        const data = await res.json();
+        console.log("收到在線使用者：", data);
       }
       //------user2option end------
       async function reset() {
         await fetch("/reset_options", { method: "POST" });
       }
+      //---------------------for repo start--------------------------------------------
+      /* ===== 1. 取得 DOM ===== */
+      const btn      = document.getElementById('repository-btn');
+      const drawer   = document.getElementById('repository-drawer');
+      const closeBtn = document.getElementById('drawer-close');
+      const backdrop = document.getElementById('drawer-backdrop');
+      const bodyBox  = document.getElementById('repository-body');
+      const folderCount = document.getElementById('folder-count');
+      const addFolderBtn = document.getElementById('add-folder');
+      const newFolderInput = document.getElementById('new-folder-name');
+      let drawerLocked = false; //防止連點
+      /*2. Drawer 開關工具函式 */
+      function toggleDrawer(open){
+        if (drawerLocked) return;          // 阻止多次觸發
+        drawerLocked = true;
 
+        if (open) {
+          drawer.classList.remove('hidden');        // 先解除 display:none
+          // 雙 requestAnimationFrame
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
+          });
+          backdrop.classList.add('show');   
+          
+          setTimeout(() => { //防連點鎖1S
+            drawerLocked = false;
+          }, 1050);
+        } else {
+          drawer.classList.remove('open');        // 先滑出去
+          drawer.addEventListener('transitionend', function h(){
+            drawer.classList.add('hidden');       // 動畫結束再 display:none
+            drawer.removeEventListener('transitionend', h);
+            drawerLocked = false; 
+          });
+          backdrop.classList.remove('show');
+        }
+      }
 
+      /* 3. 事件註冊*/
+      btn.addEventListener('click', async ()=>{
+        const openNow = !drawer.classList.contains('open');
+        if (openNow) await loadRepository();    // 只在開啟前重新抓資料
+        toggleDrawer(openNow);
+      });
+      closeBtn.addEventListener('click', ()=>toggleDrawer(false));
+      backdrop.addEventListener('click', ()=>toggleDrawer(false));
+
+      async function createFolder() {
+        const name = newFolderInput.value.trim();
+        if (!name) return alert("資料夾名稱不可空白");
+        await fetch("/repository/folders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        });
+        newFolderInput.value = "";
+        await loadRepository();
+      }
+
+      // 點按鈕呼叫它
+      addFolderBtn.addEventListener("click", createFolder);
+      newFolderInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          createFolder();
+        }
+      });
+      /*  4. 載入與渲染倉庫 */
+      async function loadRepository(){
+        const res = await fetch("/repository/folders");
+        const data = await res.json();         // [{id,name,items:[{id,name}]}]
+        folderCount.textContent = `(${data.length})`;
+        window.repoFolders = data;
+        // 然後再畫一次畫面
+        renderRepository(data, window.currentOptions || []);
+      }
+
+      async function renderRepository(folders, optionsNow = []) {
+        //記目前打開folder
+        const openFolderIds = new Set();
+        document.querySelectorAll("#repository-body details[open]").forEach(details => {
+          const folderId = details.dataset.folderId;
+          if (folderId) openFolderIds.add(folderId);
+        });
+        //-----------------------------------
+        const box = document.getElementById("repository-body");
+        box.innerHTML = "";                                // 先清空整個側欄
+        // const optionsNow = window.currentOptions || [];    // 目前候選，用來判斷灰色
+         /* ───────── 每個資料夾 ───────── */
+        folders.forEach(folder => {
+          /* === <details> 外殼 === */
+          const det = document.createElement("details");  
+          det.dataset.folderId = folder.id; 
+          det.open =  openFolderIds.has(folder.id);
+          /* 摺疊標題 + 刪資料夾*/
+          const sum = document.createElement("summary");
+          sum.className = "folder-header";
+          sum.innerHTML = `${folder.name} (${folder.items.length})`;
+          const trash = document.createElement("button");
+
+          trash.className = "del-btn";
+          trash.textContent = "✕";
+          trash.onclick = () => deleteFolder(folder.id);
+          sum.appendChild(trash);
+          det.appendChild(sum);
+
+          /* === 內部 <ul> === */
+          const ul = document.createElement("ul");  
+
+           /* ─── 現有 item ─── */
+          folder.items.forEach((item, idx) => {
+            const li = document.createElement("li");
+            li.className = "option-item selectable-row " +
+                     (optionsNow.includes(item.name)
+                       ? "item-inactive"   // 已在候選  灰
+                       : "item-active");   // 尚未加入  黑
+             /* --- 內容：編號 + 文字 --- */
+            const indexSpan = document.createElement("span");
+            indexSpan.className = "index-label";
+            indexSpan.textContent = `${idx + 1}.`;
+            const textSpan = document.createElement("span");
+            textSpan.className = "option-text";
+            textSpan.textContent = item.name;
+            /* --- 刪選項按鈕 --- */
+            const delBtn = document.createElement("button");
+            delBtn.className = "del-btn";
+            delBtn.textContent = "✕";
+            delBtn.onclick = (e) => {
+              e.stopPropagation();           
+              deleteItem(item.id, li);       // 原本的流程
+            };
+
+            li.append(indexSpan, textSpan, delBtn);
+            /* --- 點整列：加入 / 移除 --- */
+            li.onclick = async () => {
+              const api   = li.classList.contains("item-inactive")
+                          ? "/remove_option"
+                          : "/add_option";
+              await fetch(api, {
+                method:"POST",
+                headers:{ "Content-Type":"application/json" },
+                body: JSON.stringify({ option: item.name })   // 你的後端收的是 option 文字
+              });
+              li.classList.toggle("item-inactive");
+              li.classList.toggle("item-active");
+            };
+            ul.appendChild(li);
+          });
+
+          /* ───------------- 新增項目列 -------------─── */
+          const liNew = document.createElement("li");
+          liNew.className = "item-li";
+          liNew.innerHTML = `
+            <input class="new-item-input"
+                  style="flex:1;padding:5px 8px;border:1px solid #ddd;border-radius:4px;"
+                  placeholder="新增項目">
+            <button class="add-btn"> + </button>`;
+
+            // 綁定 input + button
+            const inp = liNew.querySelector("input");
+            const btn = liNew.querySelector("button");
+
+            // 共用送出函式（Enter 和按鈕都用它）
+            async function submitNewItem() {
+              const name = inp.value.trim();
+              if (!name) return;
+              const res = await fetch(`/repository/folders/${folder.id}/items`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+              });
+              if (!res.ok) {
+                const info = await res.json();
+                alert(info.error || "新增失敗");
+              } else {
+                inp.value = "";           // 清空輸入
+                loadRepository();         // 重載整份 repo 清單
+              }
+            }
+            // 綁定按鈕點擊
+            btn.onclick = submitNewItem;
+
+            // 綁定按下 Enter 鍵
+            inp.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") {
+                submitNewItem();
+              }
+            });
+
+            liNew.querySelector("button").onclick = async () => {
+              const inp = liNew.querySelector("input");
+              const name = inp.value.trim();
+              if (!name) return;
+
+              const res = await fetch(`/repository/folders/${folder.id}/items`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+              });
+              if (!res.ok) {
+                const info = await res.json();
+                alert(info.error || "新增失敗");
+              } else {
+                inp.value = "";
+                loadRepository();               // 重新載入
+              }
+            };
+            ul.appendChild(liNew);
+            det.appendChild(ul);
+            box.appendChild(det);
+        });
+      }
+      
+      /* 單筆加入抽籤清單 */
+      async function addItemToOptions(itemId,btn){
+        btn.disabled = true;
+        const res = await fetch(`/repository/items/${itemId}/add`, {method:"POST"});
+        const data = await res.json();
+
+        if (!res.ok && data.error){
+          alert(data.error);                // 404 或其它錯
+          btn.disabled = false;
+          return;
+        }
+        /* === 1) 立即更新 UI === */
+        const li = btn.closest(".item-li"); // 找到那一行 <li>
+        li.classList.add("disabled");
+        btn.remove();                       // 拿掉 + 按鈕
+
+        /* === 2) 把名字塞進 currentOptions，避免重複插入 === */
+        const name = btn.dataset.itemName || data.added || "";   // btn or-> data or-> ""
+        if(name){
+          window.currentOptions = (window.currentOptions || []).concat(name);
+        }
+      }
+
+      /* 刪單一 item：樂觀 UI → 後端 DELETE */
+      async function deleteItem(itemId, li){
+        if(!confirm("確定要刪除這個項目？")) return;
+        const res = await fetch(`/repository/items/${itemId}`, {method:"DELETE"});
+        if(res.ok){
+          li.remove();                      // 立即從畫面移除
+          loadRepository();                 // 再重新抓一次數量
+        }else{
+          alert("刪除失敗");
+        }
+      }
+      /* 刪整個資料夾，需二次確認 */
+      async function deleteFolder(folderId){
+        if(!confirm("這會刪掉資料夾裡所有項目！確定嗎？")) return;
+        const res = await fetch(`/repository/folders/${folderId}`, {method:"DELETE"});
+        if(res.ok){
+          loadRepository();                 // 重新渲染側欄
+        }else{
+          alert("刪除資料夾失敗");
+        }
+      }
+      //-----------------------repo end------------------------------------------------
       function updateHistoryDisplay() {
         const ul = document.getElementById("history-list");
         ul.innerHTML = ''; // 清空現有內容
@@ -890,6 +1374,7 @@
       socket.on("status_update", (data) => {
         console.log("收到最新狀態：", data);
         syncStatus(data);  // 直接呼叫原本處理邏輯
+        renderRepository(window.repoFolders, data.options);
       });
       
     </script>
