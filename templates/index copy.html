@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <title>抽!!!</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      /*background: radial-gradient(120deg, 	#d2f1ff 0%, #ffffff 100%);*/
+      
+      background-image: 
+        radial-gradient(farthest-corner at 90% 65%, #f289a5c3, rgba(239, 142, 219, 0.59), rgba(254, 254, 254, 0.727), transparent 90%),
+        radial-gradient(farthest-corner at 5% 5%, rgba(207, 75, 251, 0.604), #ffffffbc, transparent 75%),
+        radial-gradient(farthest-corner at 5% 80%, rgba(218, 225, 12, 0.826),transparent 50%),
+        radial-gradient(farthest-corner at 70% 20%, 	#2bb3f7c7 0%, #ffffff9f 100%); 
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: 100% 100%;
+      box-sizing: border-box;
+      font-family: sans-serif;
+
+    }
+    
+    img {
+      width: 100%;
+      max-width: 330px;   /* 圖片在手機上自動縮小 */
+      height: auto;
+      max-height: 220px; /* 或視覺上覺得最適合的高度 */
+      object-fit: contain;
+      display: block;         /*  讓圖片可 margin: auto */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      margin: auto;
+    }
+    h1 {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      font-size: 66px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #f581b5, #ff65a3, #6cecee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
+      animation: fadeInUp 1s ease-out;
+    }
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      border-bottom: 3px solid #dd9de1;
+      padding-bottom: 4px;
+      margin-top: 28px;
+      margin-bottom: 12px;
+    }
+    h2.gradient-title {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(to right, #4c3855, #738026);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    #optionList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+    
+    input, button {
+      font-size: 24px;
+      padding: 14px;
+      margin: 6px 4px;
+      width: 100%;         /* 滿版按鈕與輸入框 */
+      box-sizing: border-box;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: none;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      box-sizing: border-box;
+      padding: 14px 24px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.45);                 /* 白色背景讓卡片浮起來 */
+      border-radius: 20px;               /* 圓角 */
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* 陰影 */
+    }
+    .option-item{
+      /* ① 三欄版型：編號 / 文字 / 刪除 */
+      display:grid;
+      grid-template-columns: minmax(3ch,4.5ch) 1fr 46px;
+      /* ^ 左欄最小 3ch，最大 4.5ch；右欄固定 46px，剩下給文字 */
+      align-items:start;          /* 編號 & X 與文字頂齊 */
+      column-gap:12px;           /* 欄間距 */
+      padding:4px 0;             /* 上下小留白 */
+      font-size:32px;            /* 列文字大小 */
+      line-height:1.35;          /* 行高略緊 */
+      width: 700px;
+    }
+
+    /* ▼ 編號 */
+    .index-label{
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      text-align:right;
+      font-weight:900;
+      white-space:nowrap;        /* 避免 10. 換行 */
+      color:#4c3855;;
+    }
+
+    /* 文字：拿掉 width，讓 1fr 真的撐滿 */
+    .option-text{
+      word-break:break-word;     /* 長詞斷行 */
+      overflow-wrap:anywhere;    /* 再保險一次 */
+      font-size:32px;
+      letter-spacing:.3px;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      color:#4c3855;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .fancy-button:hover,
+      #mainButton:hover,
+      .switch-user-button:hover,
+      .delete-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 16px rgba(0,0,0,.15);
+      }
+    }
+    /* ▼ 刪除按鈕：固定寬高、置中 */
+    .delete-btn{
+      width:40px;
+      height:40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      border-radius:12px;
+      background:rgba(255,255,255,.65);
+      border:1px solid #f9d1e2;
+      color:#ff4f7e;
+      cursor:pointer;
+      transition:transform .15s;
+      opacity: 0.85;              
+      transition: opacity 0.2s;
+    }
+    /* .delete-btn:hover {
+      opacity: 1;   
+      transform: scale(1.04);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    } */
+    .delete-btn:active {
+      transform: scale(0.95);
+    }
+    .fancy-button {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      opacity: 1;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+    /* .fancy-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    } */
+    .fancy-button:active {
+      transform: scale(0.97);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal-box {
+      background: #fff;
+      padding: 32px 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      animation: popIn 0.5s ease-out;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    }
+    .modal-box h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    .modal-box input {
+      padding: 10px;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin: 12px 0;
+      font-size: 16px;
+    }
+    .modal-box button {
+      background: linear-gradient(to right, #f58faf, #ffa8c6);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    /* .modal-box button:hover {
+      transform: scale(1.05);
+    } */
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    #result {       /* 抽中結果更醒目 */
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      margin: 16px 0;
+      text-align: center;
+      font-size: 36px;
+      font-weight: bold;
+      background: linear-gradient(to right, #01ac6d, #5a8608);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 10px rgba(255,255,255,0.4);  
+    }
+  
+    #drawTime {
+      color: gray;
+      font-size: 16px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #cc2222;
+      text-align: center;
+      line-height: 1.5;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      font-weight: bold;
+    }
+    #mainButton {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(to right, #ff42d5db, #a49df6ee); 
+      font-size: 30px;
+      display: block;              
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 999px;             /* 大圓角 */
+      margin: 20px auto;
+      width: 100%;
+      max-width: 300px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);  /* 陰影 */
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    /* #mainButton:hover {
+      transform: scale(1.03);
+    } */
+    #mainButton:active {
+      transform: scale(0.97);
+    }
+    #history-area {
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    
+    #result.error {
+      color: #f85951;
+      font-weight: bold;
+      font-size: 36px;
+      text-shadow: none;
+    }
+    #nameModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.15); /* 淺白透明背景 */
+      backdrop-filter: blur(12px);          /* 核心打霧效果 */
+      -webkit-backdrop-filter: blur(12px);  /* Safari */
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #online-list {    
+      list-style: disc inside; /* 顯示黑點在文字前方 */
+      padding-left: 16px;       /* 留一點空間讓黑點能顯示 */
+    }
+    #online-list li {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      font-size: 22px;
+      color: #4c3855;
+      font-weight: 500;
+      padding: 4px 0;
+      width: 100%; 
+      margin-left: 8px;
+    }
+    .history-entry {
+      display: grid;
+      grid-template-columns: max-content 1fr max-content;
+      gap: 8px;
+      align-items: start;
+      padding: 6px 0;
+      font-size: 22px;
+      border-bottom: 1px dashed #e3c7e7;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      width: 100%; 
+    }
+
+    .user-label {
+      color: #555;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .result-part {
+      font-weight: 600;
+      color: #333;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .time-part {
+      color: #888;
+      white-space: nowrap;
+      font-family: monospace;
+      font-size: 16px;
+    }
+
+    .switch-user-button {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      width: 100%;
+      margin: 24px auto;
+      display: block;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    /* .switch-user-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    } */
+    .switch-user-button:active {
+      transform: scale(0.97);
+    }
+    .user-info-area {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .current-user-text {
+      margin-top: 6px;
+      font-size: 16px;
+      color: #666;
+      font-weight: 500;
+    }
+    .disabled-button {
+      opacity: 0.4;
+      pointer-events: none;     /* 禁用點擊 */
+      transform: none !important; /* 防止 hover/active 有縮放 */
+      box-shadow: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    .draw-control-button {
+      padding: 8px 16px;  /* 高度一致 */
+      font-size: 24px;
+      border: none;
+      border-radius: 999px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    /* -----------------------------for repo start--------------------------------- */
+    #repository-body .option-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      column-gap: 12px;
+      padding: 4px 0;
+      font-size: 32px;
+      line-height: 1.35;
+      width: 100%;
+      box-sizing: border-box;
+      white-space: nowrap;
+      align-items: center;
+    }
+    
+    /* 1. 浮動開關按鈕 FAB  */
+    .fab{
+      position:fixed;
+      right:3.5rem;                         /* 距離右下角 */
+      bottom:2.5rem;
+      z-index:60;
+      width: 20vw;
+      height: 20vw;
+      max-width: 160px;
+      min-width: max-content;
+      max-height: 160px;
+      min-height: max-content;
+      border: none;
+      border-radius: 50%;
+      font-size: clamp(40px, 12vw, 80px); line-height:1;    /* icon 大小 */
+      display:flex; align-items:center; justify-content:center;
+
+      color:#fff; cursor:pointer;
+      background:linear-gradient(135deg,#ff8ac2,#7dd3fc);
+      box-shadow:0 4px 12px rgba(0,0,0,.25);
+      transition:transform .2s;
+    }
+    .fab:active{ transform:scale(.95); }
+
+    /* 2. 抽屜 Drawer（統一右側滑出） */
+    .drawer{
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      position:fixed; top:0; right:0; bottom:0;
+      width:320px;                /* 桌機寬度 */
+      max-width:85vw;             /* 手機自適應 */
+      background:#ffffffb4;       /* 半透明白 */
+      backdrop-filter:blur(8px);  /* 毛玻璃 */
+      box-shadow:-4px 0 12px rgba(0,0,0,.2);
+      display:flex; flex-direction:column;
+      transform:translateX(100%); /* 初始藏在右邊 */
+      /* animation speed curve       */
+      transition:transform 1s cubic-bezier(.25,.8,.25,1),  
+             opacity   1s cubic-bezier(.25,.8,.25,1);
+      opacity:0;
+      z-index:55;
+    }
+    .drawer.open{ transform:translateX(0); opacity:1;  }
+    .drawer-header{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 16px;
+      border-bottom:1px solid #e4e4e4;
+    }
+    .drawer-header h3{
+      flex:1;                       
+      font-size:32px;
+      display:flex; 
+      align-items:center; 
+      gap:4px;
+      margin:0;
+      color: #17b33a;
+
+    }
+    .drawer-footer{
+      display:flex;
+      gap:10px;
+      padding:12px 16px;
+      border-top:1px solid #e4e4e4;
+     
+    }
+    .drawer-footer input{
+      flex:1 1 auto;          /* 最大化填滿寬度 */
+      min-width:0;            /* 防止 flex 溢出 */
+      padding:8px 10px;
+      border:1px solid #d0d0d0;
+      border-radius:6px;
+      font-size:.95rem;
+      width:auto !important;                     /* 覆蓋全域 input{width:100%} */
+     
+    }
+    .drawer-footer button{
+      flex:0 0 auto;          /* ★ 讓按鈕保持自身寬度 */
+      padding:0 20px;
+      border:none; border-radius:6px;
+      background:#d8d6ff;
+      font-weight:600;
+      cursor:pointer;
+      width:auto !important;       /* 只用自己的字寬 */
+    }
+    /* ─── 每個 item 行 ─── */
+    .item-li{
+      display:flex; align-items:center; gap:8px;
+      padding:4px 0;
+    }
+    .add-btn{
+      width:32px; height:32px;               /* 比原來 28px 稍大，視覺更剛好 */
+      border:none; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;  /* 完全置中關鍵 */
+      line-height:1;         /* ＋ 號大小 & 去掉行高干擾 */
+      font-size: 28px;
+      font-weight: 400;
+      padding:0; cursor:pointer;
+      background:#ff8ac2;
+      color:#fff;
+      box-shadow:0 2px 6px rgba(0,0,0,.15);
+      margin-left:auto;
+    }
+    .item-li.disabled .add-btn{ display:none; }
+    /* ---------------------------- */
+    .icon-btn{
+      display:flex;align-items:center;justify-content:center;  /* ★ 完全置中 */
+      width:36px;height:36px;padding:0;
+      border:none;border-radius:50%;background:#d9d3d3;
+      font-size:20px;line-height:1;cursor:pointer;
+      font-weight: bold;
+    }
+
+    /* 滾動內容區 */
+    #repository-body{ flex:1; overflow-y:auto; padding:8px 16px; }
+
+    /* 3. 半透明遮罩  */
+    .backdrop{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.3);
+      opacity:0; pointer-events:none;
+      transition:opacity .35s;
+      z-index:50;
+    }
+    .backdrop.show{ opacity:1; pointer-events:auto; }
+
+    /*  4. 列表樣式與已加入灰化  */
+    .folder-header{ /* 手風琴標題 */
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center;
+      padding:6px 0; 
+      cursor:pointer; 
+      font-weight:600;
+      font-size:28px;
+      color: #c60ef3;
+    }
+    .folder-header .count{ color:#888; font-weight:400; font-size:.9rem; }
+    .item-li{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; }
+    .item-li.disabled{ opacity:.35; cursor:pointer; }
+    .add-btn{ background:none; border:none; cursor:pointer; color:#ff66a5;}
+    .hidden{display:none;}
+
+    .del-btn{
+      width:32px;height:32px;margin-left:6px;
+      border:none;border-radius:50%;background:#ff8484;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:16px;
+      font-weight: bold;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      will-change: transform, box-shadow;
+    }
+    .del-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .del-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset;
+    }
+    /* 未加入 option：黑字（或你原先的顏色） */
+    .item-active  .option-text { color:#4c3855;; }
+    /* 已加入 option：改成灰字 + 降低不透明度 */
+    .item-inactive .option-text { color:#8b8b8b; opacity:.55; }
+
+    /* 讓整列都能點；hover 時加點回饋 */
+    .selectable-row{
+    cursor:pointer;
+    transition:background .12s;
+    padding:4px 0;
+    display:grid;
+    grid-template-columns: 1fr 46px; /* 文字 / 刪除 */
+    column-gap:12px;
+  }
+
+    @media (hover:hover){
+      .selectable-row:hover{ background:rgba(0,0,0,.05); }
+    }
+    /* ---------------------repo end ---------------------------------------------- */
+    /* === Wheel (conic-gradient) ==================================== */
+    :root{
+      --wheel-size: clamp(280px, 50vw, 480px);
+      --ring: 8px;
+      --easing: cubic-bezier(0.2, 0.9, 0.4, 1);
+    }
+
+    .wheel-wrap{
+      position: relative;
+      width: var(--wheel-size);
+      height: var(--wheel-size);
+      margin: 24px auto 8px;
+    }
+
+    #wheel{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: var(--ring) solid #e59af6e7;
+      box-shadow: 0 12px 30px rgba(0,0,0,.12) inset, 0 8px 20px rgba(0,0,0,.10);
+      overflow: hidden;
+      transform: rotate(0deg);
+      transition: transform 4s var(--easing);
+      will-change: transform;
+      background-blend-mode: lighten;
+    }
+    #wheel::after {
+      content:"";
+      position:absolute; inset:0;
+      border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 70%);
+      pointer-events:none;
+    }
+
+    /* 文字是獨立圖層 */
+    #labels{
+      position:absolute; inset:0;
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      font-weight: 700;
+      user-select: none;
+      pointer-events: none;
+    }
+    #labels .label{
+      position:absolute; left:50%; top:50%;
+      transform-origin: 50% 50%;
+      white-space: nowrap;
+      font-size: clamp(18px, 2.6vw, 24px);
+      color:#4c3855; text-shadow:0 1px 0 #fff8; letter-spacing:.5px;
+    }
+
+    /* 正上方固定指針 */
+    #pointer{
+      position: absolute;
+      left: -12px;           /* 從圓左邊伸出來 */
+      top: 50%;              /* 垂直置中 */
+      transform: translateY(-50%) ;  /* 旋轉讓箭頭往右 */
+      width: 0;
+      height: 0;
+      border-left: 40px solid #ff82c9;             /* 指向右邊 */
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      filter: drop-shadow(0 3px 2px rgba(0,0,0,.25));
+      z-index: 5;
+    }
+
+    /* 中心圓鈕 */
+    .hub{
+      position:absolute; left:50%; top:50%;
+      transform: translate(-50%,-50%);
+      width: 64px; height: 64px; border-radius:50%;
+      background: radial-gradient( #bd23fa 56% 100%);
+      border: 5px solid #ffffffdd;
+      box-shadow: 0 4px 10px rgba(0,0,0,.25);
+    }
+
+    /* ---------------------wheel end ------------------------------- */
+
+    /* --------for travel-------- */
+    .title-row{
+      display: flex;
+      justify-content: center;   /* 整列置中 */
+      align-items: center;       /* 垂直對齊 */
+      gap: 20px;                 /* 字跟按鈕留空 */
+      flex-wrap: wrap;           /* 手機窄螢幕時自動換行 */
+    }
+
+    /* 給這顆按鈕小一點、顏色一致 */
+    .travel-btn{
+      /* padding: 8px 22px; */
+      font-size: 30px;
+      background: linear-gradient(to right,#82d1f9,#7ceeda);
+      box-shadow: 0 4px 10px rgba(0,0,0,.1);
+      width: auto;               /* 不要滿版 */
+      margin-top: 40px;
+    }
+    /* ------------for tarvel--------------- */
+    @media (max-width: 480px) {
+      h1, h2 {
+        font-size: 20px;
+        text-align: center;
+      }
+      .option-item {
+        font-size: 18px;
+      }
+      .delete-btn {
+        font-size: 18px;
+      }
+    }
+    @media (max-width: 767px){
+      .drawer{
+        width:85vw;
+        max-width:85vw;
+        min-width:320px;
+      }
+    }
+
+    /* 桌機：展開一半，最大 640px，最小 320px */
+    @media (min-width: 768px){
+      .drawer{
+        width:70vw;          /* ⇦ 佔視窗寬度 70% */
+        max-width:900px;     /* 可選上限，超大螢幕時抽屜不會過寬 */
+        min-width:320px;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.8); opacity: 0; }
+      60%  { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    #result.show {
+      animation: pop 0.4s ease-out;
+    }
+
+    
+  </style>
+</head>
+<!-- made by waligach in June 2025 -->
+<body>
+  <div id="nameModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 999;">
+    <div style="background: rgba(255, 255, 255, 0.855); padding: 24px 32px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center;">
+      <h1 style="margin-bottom: 12px;"> 嗨！你是誰？</h1>
+      <input id="nameInput" type="text" placeholder="你叫啥來著" style="padding: 12px; font-size: 18px; width: 100%; border-radius: 8px; border: 1px solid #ccc;">
+      <button onclick="saveUserName()" style="margin-top: 16px; padding: 10px 16px; font-size: 20px; border: none;font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif; border-radius: 8px; background: #ff85b2; color: white; cursor: pointer;">
+        忍不住要進去了 ><
+      </button>
+      <div class="note">※ 亂填讓我認錯人的 我一定有辦法找到你 🫠</div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="title-row">
+      <h1>欸要吃什麼？</h1>
+      <!-- <button id="travelBtn"
+              class="fancy-button travel-btn"
+              onclick="location.href='/travel'">
+              <img src="{{ url_for('static', filename='korea.png') }}" alt="korea" style="width: 25px; height: auto;">
+      </button> -->
+    </div>
+    <!-- <h1>欸要吃什麼？</h1>
+    <button class="fancy-button draw-control-button"
+        style="background: linear-gradient(to right,#82d1f9,#7ceeda);"
+        onclick="location.href='/travel'">
+        旅遊時間表
+    </button> -->
+     <!-- ★ 看哪裡能用 -->
+    <!-- ----------------------for repo start------------------------------------- -->
+    <!-- 1. 浮動按鈕：保持不動 -->
+    <button id="repository-btn" class="fab" aria-label="倉庫">📦 </button>
+
+    <!-- 2. 抽屜容器 -->
+    <div id="repository-drawer" class="drawer hidden">
+      <div class="drawer-header">
+        <h3>📦 我的倉庫 <span id="folder-count"></span></h3>
+        <button id="drawer-close" class="icon-btn">--</button>
+      </div>
+
+      <!-- 捲動內容 -->
+      <div id="repository-body"></div>
+
+      <!--新增資料夾 -->
+      <div class="drawer-footer">
+        <input id="new-folder-name" placeholder="新增資料夾名稱">
+        <button id="add-folder">＋ 新增資料夾</button>
+      </div>
+    </div>
+
+    <!-- 3. 遮罩（點擊可關閉） -->
+    <div id="drawer-backdrop" class="backdrop hidden"></div>
+
+    <!-- -------------------repo end---------------------------------------------- -->
+    <img src="{{ url_for('static', filename='random.png') }}" alt="random">
+    <br>
+    <div>
+      <input id="newOption" type="text" placeholder="加個選項">
+      <button class="fancy-button" onclick="addOption()">加進選項吧 ~</button>
+      <button class="fancy-button" onclick="confirmReset()" >全部重設 !</button>
+    </div>
+
+    <h2 class="gradient-title" >目前選項：</h2>
+    <ul id="optionList"></ul>
+    <!-- === Wheel area === -->
+    <div class="wheel-wrap">
+      <div id="pointer"></div>
+      <div id="wheel">
+        <div id="labels"></div>
+        <div class="hub"></div>
+      </div>
+    </div>
+    <!-- === Wheel area end === -->
+    <div class="draw-controls" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0;">
+      <button id="quickDrawBtn" onclick="quickDraw()" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #e5c062eb, #efbe42dd); ">快速抽</button>
+      <button id="mainButton" class="fancy-button" onclick="draw()">幫我選吧 !!</button>
+      <button onclick="toggleLock()" id="lockBtn" class="fancy-button draw-control-button" style=" background: linear-gradient(to right, #a4a1e4f1, #9690e7ee); ">鎖定</button>
+    </div>
+    <p id="loadingText" style="display:none; text-align:center; font-size:24px; color:#888;"></p>
+    <h2 id="result" >我來幫你選 ! </h2>
+    <p id="drawTime" style="color: gray; font-size: 16px;"></p>
+    <div id="history-area" style="margin-top: 20px;">
+      <h2 class="gradient-title">抽選紀錄 ( 近五筆 ):</h2>
+      <ul id="history-list" style="padding-left: 0;"></ul>
+    </div>
+    <div class="user-info-area">
+      <button  id="resetUserBtn" class="switch-user-button" onclick="resetUser()">更換使用者</button>
+      <span id="currentUserDisplay" class="current-user-text"></span>
+    </div>
+    
+    <div id="online-area" style="margin-top:24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #dd9de1; padding-bottom: 4px; margin-bottom: 12px;">
+        <!-- 取消底線自己畫 -->
+        <h2 class="gradient-title" style="margin: 0;border-bottom: none;">現在在線 ( <span id="online-count">0</span> )</h2> 
+        <button onclick="addOnlineUsersToOptions()" 
+                class="fancy-button"
+                style="font-size: 16px; padding: 6px 16px; width: auto; max-width: 160px; white-space: nowrap; background: linear-gradient(to right, #d355e9dd, #6fb0eddf); ">
+          👥 加進選項
+        </button>
+      </div>
+
+      <ul id="online-list" style="padding-left:0;"></ul>
+    </div>
+    <h4 style="color:rgba(176, 175, 175, 0.889);font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif; text-align: center;"> ★ made by waligach & gpt plus in June 2025 </h4>
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
+    <script>
+      const socket = io();     //  一開始就連線
+    </script>
+    <script>
+      
+      //---- login user
+      // 2.儲存名稱並關閉登入框
+      function saveUserName() {
+        const nameInput = document.getElementById("nameInput").value.trim();
+        if (!nameInput) {
+          alert("請輸入名稱！");
+          return;
+        }
+        // localStorage.setItem("userName", nameInput); //先不存 等候端檢查重複
+        document.getElementById("resetUserBtn").textContent = `更換使用者（ 泥現在是 ${nameInput} ）`;
+        document.getElementById("nameModal").style.display = "none";
+        socket.emit("register", nameInput);//3.丟到後面檢查重複 會回復fail or ok
+      }
+      //4.1 後端回fail
+      socket.on("register_failed", data => {//check same name
+        alert(data.error);              // 名稱重複
+        // localStorage.removeItem("userName");
+        document.getElementById("nameModal").style.display = "flex";
+        document.getElementById("nameInput").focus();
+      });
+      //4.2 後端回ok 存
+      socket.on("register_ok", username => {   // backend多送這個事件 ok 才存
+        localStorage.setItem("userName", username);
+        document.getElementById("resetUserBtn").textContent =
+            `更換使用者（ 泥現在是 ${username} ）`;
+        document.getElementById("nameModal").style.display = "none";
+      });
+
+      socket.on("user_list", users => {//list user
+        const countEl = document.getElementById("online-count");
+        const listEl  = document.getElementById("online-list");
+        countEl.textContent = users.length;
+        listEl.innerHTML = "";
+        users.forEach(name => {
+          const li = document.createElement("li");
+          li.textContent = name;
+          li.style.padding = "4px 0";
+          listEl.appendChild(li);
+        });
+      });
+      // 1.網頁載入完成後執行 跳視窗問
+      window.addEventListener("DOMContentLoaded", () => {
+        const saved = localStorage.getItem("userName");
+        if (!saved) {//local 沒存過 等輸入
+          document.getElementById("nameModal").style.display = "flex";
+        } else {//local 有存過了 直接丟後面檢查
+          document.getElementById("resetUserBtn").textContent = `更換使用者（ 泥現在是 ${saved} ）`;
+          socket.emit("register", saved); //3.丟到後面檢查重複 會回復fail or ok
+        }
+
+        const input = document.getElementById("nameInput");// 讓按下 Enter 可以觸發登入
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            saveUserName(); // 2.透過 saveUserName() 把剛輸入的名字送去後端
+          }
+        });
+      });
+      
+      //document.getElementById("resetUserBtn").textContent = `更換使用者（ 泥現在是 ${saved} ）`;// 顯示在按鈕上
+      // 更換使用者的按鈕
+      function resetUser() {
+        localStorage.removeItem("userName");
+        location.reload(); // 重新整理後 刪之前名字 再重新詢問名字
+      }
+      //-------------------------
+      
+      function confirmReset() { //reset warning 
+        const confirmed = confirm("這會清空所有選項喔! 確定嗎？");
+        if (confirmed) { 
+          reset();  // 呼叫原本的 reset()
+        }
+      }
+      let lastVersion = null;
+      const historyList = [];
+      let isSpinning = false;//spinning flag
+      let needReloadHistory = false;  // 需要重抓 history
+      let lastWindowWidth = 0;
+
+      async function syncStatus(dataFromCheck = null) {
+        const data = dataFromCheck || await (await fetch("/status")).json();
+
+        const resultEl = document.getElementById("result");
+        const timeEl = document.getElementById("drawTime");
+        if (!isSpinning) {
+          resultEl.textContent = data.result ? `抽中：${data.result}` : "我來幫你選 !!";
+          timeEl.textContent   = data.time ? `抽取時間：${data.time}` : "";
+        }
+        const list = document.getElementById("optionList");
+        list.innerHTML = "";
+        (data.options || []).forEach((opt, index) => {
+          const li = document.createElement("li");
+          li.className = "option-item";
+
+          const idx = document.createElement("span");
+          idx.className = "index-label";
+          idx.textContent = `${index + 1}.`;
+
+          const span = document.createElement("span");
+          span.textContent = opt;
+          span.className = "option-text";
+
+          const x = document.createElement("button");
+          x.textContent = "❌";
+          x.className = "delete-btn";
+          x.onclick = async () => {
+            await fetch("/remove_option", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ option: opt })
+            });
+          };
+
+          li.appendChild(idx);
+          li.appendChild(span);
+          li.appendChild(x);
+          list.appendChild(li);
+        });
+
+        window.currentOptions = data.options;
+        let buildWheelTimer = null;
+        function scheduleBuildWheel(opts){
+          clearTimeout(buildWheelTimer);
+          buildWheelTimer = setTimeout(() => buildWheel(opts), 50);
+        }
+
+        if (!isSpinning) {
+          scheduleBuildWheel(window.currentOptions);
+        }
+      }
+      //--------wheel start--------
+      /* ====== 輪盤：配色與建構 ====== */
+      const WHEEL_COLORS = ["#f8b4c6","#cbb7f0","#a5c9ff","#c8e6d2","#a9b8d9","#ffd5c8"];
+      let loadingTimer = null;
+      
+      function buildWheel(opts){
+        if (isSpinning) return; 
+        const wheelEl  = document.querySelector('#wheel');
+        const labelsEl = document.querySelector('#labels');
+
+        // --- 歸零、清乾淨 ---
+        labelsEl.innerHTML = '';
+
+        if (!Array.isArray(opts) || !opts.length){
+          wheelEl.style.background = '';
+          return;
+        }
+
+        // --- 扇形底圖 ---
+        const slice = 360 / opts.length;
+        const grad = opts.map((_, i) => {
+          const c    = WHEEL_COLORS[i % WHEEL_COLORS.length];
+          const from = (i * slice).toFixed(4);
+          const to   = ((i + 1) * slice).toFixed(4);
+          return `${c} ${from}deg ${to}deg`;
+        }).join(', ');
+        // 0° 對準正上方
+        wheelEl.style.background = `conic-gradient(from -90deg, ${grad})`;
+
+        // --- 外圈標籤（同步建構） ---
+        const size = wheelEl.getBoundingClientRect().width;
+        lastWindowWidth = window.innerWidth;
+        const r = size / 2;
+        const radiusPx = r * 0.78;   // 調整字離中心距離
+        const base = -90; //底圖從正上開始，標籤角度也要用
+        for (let i = 0; i < opts.length; i++) {
+          const θ = base + i * slice + slice / 2;
+          const span = document.createElement('span');
+          span.className = 'label';
+          span.textContent = opts[i];
+
+          // 絕對以圓心為基準定位
+          span.style.transform =
+            `translate(-50%, -50%) rotate(${θ}deg) translate(0, -${radiusPx}px) rotate(${-θ}deg)`;
+          labelsEl.appendChild(span);
+        }
+      }
+      window.addEventListener('resize', () => {
+        if (isSpinning) return;
+
+        const currentWidth = window.innerWidth;
+
+        // 只有在視窗寬度真正改變時才重繪轉盤
+        if (currentWidth !== lastWindowWidth) {
+          console.log(`Window width changed from ${lastWindowWidth} to ${currentWidth}. Rebuilding wheel.`);
+          // 注意：這裡不需要再手動更新 lastWindowWidth，
+          // 因為 buildWheel 函式內部會負責更新它。
+          buildWheel(window.currentOptions || []);
+        }
+      });
+      /* ====== 輪盤：一次算到中獎角度並旋轉 ====== */
+      function spinToWinner(winner, showTimeText, afterStop){
+        const options = window.currentOptions || [];
+        const idx = options.indexOf(winner);
+        const wheelEl  = document.querySelector('#wheel');
+        const resultEl = document.getElementById('result');
+        const timeEl   = document.getElementById('drawTime');
+        const mainBtn  = document.getElementById('mainButton');
+
+        if (idx === -1){
+          // 防呆 結果不在選項中，直接顯示
+          resultEl.textContent = `抽中：${winner}`;
+          if (showTimeText) timeEl.textContent = `抽取時間：${showTimeText}`;
+          if (typeof afterStop === 'function') afterStop();
+          return;
+        }
+
+        // 0° 已在正上方 → 不用 OFFSET。停在中線就好
+        const slice  = 360 / options.length;
+        const rounds = 7 + Math.floor(Math.random()*3);   // 4~6 圈
+        const stopAt = 360 * rounds - (idx * slice + slice/2);
+
+         // 轉之前
+        isSpinning = true;
+        resultEl.style.visibility = 'hidden';
+        timeEl.style.visibility   = 'hidden';
+        mainBtn.disabled = true;
+
+        wheelEl.style.transition = 'none';
+        wheelEl.style.transform  = 'rotate(0deg)';
+        void wheelEl.offsetWidth;
+        wheelEl.style.transition = 'transform 4s var(--easing)';
+        wheelEl.style.transform  = `rotate(${stopAt}deg)`;
+
+        const onEnd = () => {
+          wheelEl.removeEventListener('transitionend', onEnd);
+
+          // 轉完才顯示
+          resultEl.textContent = `抽中：${winner}`;
+          if (showTimeText) timeEl.textContent = `抽取時間：${showTimeText}`;
+          resultEl.style.visibility = 'visible';
+          timeEl.style.visibility   = 'visible';
+          resultEl.classList.remove('show'); void resultEl.offsetWidth; resultEl.classList.add('show');
+
+          mainBtn.disabled = false;
+          // 收尾
+          isSpinning = false;
+          // 這裡才做後續（寫 history / 重抓 history）
+          if (typeof afterStop === 'function') afterStop();
+          
+        };
+        wheelEl.addEventListener('transitionend', onEnd);
+      }
+      //--------wheel end--------
+      async function addOption() {
+        const input = document.getElementById("newOption");
+        const value = input.value.trim();
+        if (!value) return;
+        if ((window.currentOptions || []).includes(value)) {
+          alert("慢了 別人填了！");
+          input.value = "";
+          return;
+        }
+        await fetch("/add_option", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ option: value })
+        });
+        input.value = "";
+      }
+
+      document.getElementById("newOption").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addOption();
+        }
+      });
+
+      async function draw() {
+        if (drawLocked) {
+          // alert("抽獎已鎖定！");
+          return;
+        }
+        
+        const userName = localStorage.getItem("userName");//user id
+
+        const resultEl = document.getElementById("result");
+        const timeEl = document.getElementById("drawTime");
+        const loadingText = document.getElementById("loadingText");
+        //precheck isempty no option
+        const check = await fetch("/status");
+        const dataCheck = await check.json();
+        if (!dataCheck.options || dataCheck.options.length === 0) {
+          resultEl.textContent = "沒選項你想抽啥 ?";
+          resultEl.classList.add("error");  // 加上紅色樣式
+          resultEl.style.display = "block";
+          return;
+        }else {
+          resultEl.classList.remove("error")
+        }
+
+        isSpinning = true;
+        needReloadHistory = true;
+        // 顯示 loading 文字，隱藏結果
+        resultEl.style.display = "none";
+        loadingText.style.display = "block";
+        timeEl.textContent = "";
+        //------------update to wheel function--------
+        // loadingText.textContent = "準備中...";
+        // const phrases = [
+        //   "選擇困難中 等我...",
+        //   "正在叫吳澤樺起床...",
+        //   "等待別人給我讚賞...",
+        //   "抽完不要又後悔喔...",
+        //   "不覺得這樣很好玩嗎...",
+        //   "拜託給點情緒價值...",
+        //   "好啦真的要抽了 ! ! !"
+        // ];
+        // // 輪流更新文字
+        // loadingIndex = 0;
+        // loadingTimer = setInterval(() => {
+        //   loadingText.textContent = phrases[loadingIndex % phrases.length];
+        //   loadingIndex++;
+        // }, 800); 
+        // // 等秒（模擬抽獎）
+        // await new Promise(resolve => setTimeout(resolve, 6000));
+
+
+        //發出請求
+        const res = await fetch("/draw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user: userName })
+        });
+        const data = await res.json();
+        // 結果顯示
+        if (loadingTimer) clearInterval(loadingTimer); // 停止輪播
+        loadingText.style.display = "none";
+        resultEl.style.display = "block";
+
+        if (data.result) {
+          spinToWinner(data.result, data.time, async () => {
+            // 如果你的後端在 /draw 時已經寫好 DB 並廣播 history_update，
+            // 這裡「重抓一次」就能確保是轉完後才顯示
+            await loadHistory();
+            needReloadHistory = false;
+          });
+          // resultEl.textContent = `抽中：${data.result}`;
+          // timeEl.textContent = `抽取時間：${data.time}`;
+
+          // resultEl.classList.remove("show"); // 先移除再重新加
+          // void resultEl.offsetWidth; // force reflow
+          // resultEl.classList.add("show");
+        } else {
+          resultEl.textContent = data.error || "錯誤";
+          timeEl.textContent = "";
+          isSpinning = false;
+          needReloadHistory = false;
+        }
+      }
+      //--------------two btn
+      let drawLocked = false;
+
+      function toggleLock() {
+        drawLocked = !drawLocked;
+        const lockBtn = document.getElementById("lockBtn");
+        const mainBtn = document.getElementById("mainButton");
+        const quickBtn = document.getElementById("quickDrawBtn");
+
+        lockBtn.textContent = drawLocked ? "🔒解鎖" : "鎖定";
+        
+        if (drawLocked) {
+          mainBtn.classList.add("disabled-button");
+          quickBtn.classList.add("disabled-button");
+        } else {
+          mainBtn.classList.remove("disabled-button");
+          quickBtn.classList.remove("disabled-button");
+        }
+      }
+      async function quickDraw() {
+        
+        if (drawLocked) {
+          // alert("抽獎已鎖定！");
+          return;
+        }
+        const userName = localStorage.getItem("userName") ;
+        const resultEl = document.getElementById("result");
+        const timeEl = document.getElementById("drawTime");
+        const check = await fetch("/status");
+        const dataCheck = await check.json();
+        if (!dataCheck.options || dataCheck.options.length === 0) {
+          resultEl.textContent = "沒選項你想抽啥 ?";
+          resultEl.classList.add("error");
+          resultEl.style.display = "block";
+          return;
+        }else {
+          resultEl.classList.remove("error")
+        }
+        const res = await fetch("/draw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user: userName })
+        });
+        const data = await res.json();
+        if (data.result) {
+          resultEl.textContent = `抽中：${data.result}`;
+          timeEl.textContent = `抽取時間：${data.time}`;
+          resultEl.classList.remove("show");
+          void resultEl.offsetWidth;
+          resultEl.classList.add("show");
+        } else {
+          resultEl.textContent = data.error || "錯誤";
+          timeEl.textContent = "";
+        }
+      }
+      //--------quick draw end----user2option ------------
+      async function addOnlineUsersToOptions() {
+        if (!confirm("這會清空之前所有選項只剩用戶喔! 確定嗎？")) return;
+        // 清空選項 reset() 
+        await reset();  
+        // 再抓目前在線使用者
+        const res = await fetch("/add_online_users", { method: "POST" });
+        const data = await res.json();
+        console.log("收到在線使用者：", data);
+      }
+      //------user2option end------
+      async function reset() {
+        await fetch("/reset_options", { method: "POST" });
+      }
+      //---------------------for repo start--------------------------------------------
+      /* ===== 1. 取得 DOM ===== */
+      const btn      = document.getElementById('repository-btn');
+      const drawer   = document.getElementById('repository-drawer');
+      const closeBtn = document.getElementById('drawer-close');
+      const backdrop = document.getElementById('drawer-backdrop');
+      const bodyBox  = document.getElementById('repository-body');
+      const folderCount = document.getElementById('folder-count');
+      const addFolderBtn = document.getElementById('add-folder');
+      const newFolderInput = document.getElementById('new-folder-name');
+      let drawerLocked = false; //防止連點
+      /*2. Drawer 開關工具函式 */
+      function toggleDrawer(open){
+        if (drawerLocked) return;          // 阻止多次觸發
+        drawerLocked = true;
+
+        if (open) {
+          drawer.classList.remove('hidden');        // 先解除 display:none
+          // 雙 requestAnimationFrame
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
+          });
+          backdrop.classList.add('show');   
+          
+          setTimeout(() => { //防連點鎖1S
+            drawerLocked = false;
+          }, 1050);
+        } else {
+          drawer.classList.remove('open');        // 先滑出去
+          drawer.addEventListener('transitionend', function h(){
+            drawer.classList.add('hidden');       // 動畫結束再 display:none
+            drawer.removeEventListener('transitionend', h);
+            drawerLocked = false; 
+          });
+          backdrop.classList.remove('show');
+        }
+      }
+
+      /* 3. 事件註冊*/
+      btn.addEventListener('click', async ()=>{
+        const openNow = !drawer.classList.contains('open');
+        if (openNow) await loadRepository();    // 只在開啟前重新抓資料
+        toggleDrawer(openNow);
+      });
+      closeBtn.addEventListener('click', ()=>toggleDrawer(false));
+      backdrop.addEventListener('click', ()=>toggleDrawer(false));
+
+      async function createFolder() {
+        const name = newFolderInput.value.trim();
+        if (!name) return alert("資料夾名稱不可空白");
+        await fetch("/repository/folders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        });
+        newFolderInput.value = "";
+        await loadRepository();
+      }
+
+      // 點按鈕呼叫它
+      addFolderBtn.addEventListener("click", createFolder);
+      newFolderInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          createFolder();
+        }
+      });
+      /*  4. 載入與渲染倉庫 */
+      async function loadRepository(){
+        const res = await fetch("/repository/folders");
+        const data = await res.json();         // [{id,name,items:[{id,name}]}]
+        folderCount.textContent = `(${data.length})`;
+        window.repoFolders = data;
+        // 然後再畫一次畫面
+        renderRepository(data, window.currentOptions || []);
+      }
+
+      async function renderRepository(folders, optionsNow = []) {
+        //記目前打開folder
+        const openFolderIds = new Set();
+        document.querySelectorAll("#repository-body details[open]").forEach(details => {
+          const folderId = details.dataset.folderId;
+          if (folderId) openFolderIds.add(folderId);
+        });
+        //-----------------------------------
+        const box = document.getElementById("repository-body");
+        box.innerHTML = "";                                // 先清空整個側欄
+        // const optionsNow = window.currentOptions || [];    // 目前候選，用來判斷灰色
+         /* ───────── 每個資料夾 ───────── */
+        folders.forEach(folder => {
+          /* === <details> 外殼 === */
+          const det = document.createElement("details");  
+          det.dataset.folderId = folder.id; 
+          det.open =  openFolderIds.has(folder.id);
+          /* 摺疊標題 + 刪資料夾*/
+          const sum = document.createElement("summary");
+          sum.className = "folder-header";
+          sum.innerHTML = `${folder.name} (${folder.items.length})`;
+          const trash = document.createElement("button");
+
+          trash.className = "del-btn";
+          trash.textContent = "✕";
+          trash.onclick = () => deleteFolder(folder.id);
+          sum.appendChild(trash);
+          det.appendChild(sum);
+
+          /* === 內部 <ul> === */
+          const ul = document.createElement("ul");  
+
+           /* ─── 現有 item ─── */
+          folder.items.forEach((item, idx) => {
+            const li = document.createElement("li");
+            li.className = "option-item selectable-row " +
+                     (optionsNow.includes(item.name)
+                       ? "item-inactive"   // 已在候選  灰
+                       : "item-active");   // 尚未加入  黑
+             /* --- 內容：編號 + 文字 --- */
+            const indexSpan = document.createElement("span");
+            indexSpan.className = "index-label";
+            indexSpan.textContent = `${idx + 1}.`;
+            const textSpan = document.createElement("span");
+            textSpan.className = "option-text";
+            textSpan.textContent = item.name;
+            /* --- 刪選項按鈕 --- */
+            const delBtn = document.createElement("button");
+            delBtn.className = "del-btn";
+            delBtn.textContent = "✕";
+            delBtn.onclick = (e) => {
+              e.stopPropagation();           
+              deleteItem(item.id, li);       // 原本的流程
+            };
+
+            li.append(indexSpan, textSpan, delBtn);
+            /* --- 點整列：加入 / 移除 --- */
+            li.onclick = async () => {
+              const api   = li.classList.contains("item-inactive")
+                          ? "/remove_option"
+                          : "/add_option";
+              await fetch(api, {
+                method:"POST",
+                headers:{ "Content-Type":"application/json" },
+                body: JSON.stringify({ option: item.name })   // 你的後端收的是 option 文字
+              });
+              li.classList.toggle("item-inactive");
+              li.classList.toggle("item-active");
+            };
+            ul.appendChild(li);
+          });
+
+          /* ───------------- 新增項目列 -------------─── */
+          const liNew = document.createElement("li");
+          liNew.className = "item-li";
+          liNew.innerHTML = `
+            <input class="new-item-input"
+                  style="flex:1;padding:5px 8px;border:1px solid #ddd;border-radius:4px;"
+                  placeholder="新增項目">
+            <button class="add-btn"> + </button>`;
+
+            // 綁定 input + button
+            const inp = liNew.querySelector("input");
+            const btn = liNew.querySelector("button");
+
+            // 共用送出函式（Enter 和按鈕都用它）
+            async function submitNewItem() {
+              const name = inp.value.trim();
+              if (!name) return;
+              const res = await fetch(`/repository/folders/${folder.id}/items`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+              });
+              if (!res.ok) {
+                const info = await res.json();
+                alert(info.error || "新增失敗");
+              } else {
+                inp.value = "";           // 清空輸入
+                loadRepository();         // 重載整份 repo 清單
+              }
+            }
+            // 綁定按鈕點擊
+            btn.onclick = submitNewItem;
+
+            // 綁定按下 Enter 鍵
+            inp.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") {
+                submitNewItem();
+              }
+            });
+
+            liNew.querySelector("button").onclick = async () => {
+              const inp = liNew.querySelector("input");
+              const name = inp.value.trim();
+              if (!name) return;
+
+              const res = await fetch(`/repository/folders/${folder.id}/items`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+              });
+              if (!res.ok) {
+                const info = await res.json();
+                alert(info.error || "新增失敗");
+              } else {
+                inp.value = "";
+                loadRepository();               // 重新載入
+              }
+            };
+            ul.appendChild(liNew);
+            det.appendChild(ul);
+            box.appendChild(det);
+        });
+      }
+      
+      /* 單筆加入抽籤清單 */
+      async function addItemToOptions(itemId,btn){
+        btn.disabled = true;
+        const res = await fetch(`/repository/items/${itemId}/add`, {method:"POST"});
+        const data = await res.json();
+
+        if (!res.ok && data.error){
+          alert(data.error);                // 404 或其它錯
+          btn.disabled = false;
+          return;
+        }
+        /* === 1) 立即更新 UI === */
+        const li = btn.closest(".item-li"); // 找到那一行 <li>
+        li.classList.add("disabled");
+        btn.remove();                       // 拿掉 + 按鈕
+
+        /* === 2) 把名字塞進 currentOptions，避免重複插入 === */
+        const name = btn.dataset.itemName || data.added || "";   // btn or-> data or-> ""
+        if(name){
+          window.currentOptions = (window.currentOptions || []).concat(name);
+        }
+      }
+
+      /* 刪單一 item：樂觀 UI → 後端 DELETE */
+      async function deleteItem(itemId, li){
+        if(!confirm("確定要刪除這個項目？")) return;
+        const res = await fetch(`/repository/items/${itemId}`, {method:"DELETE"});
+        if(res.ok){
+          li.remove();                      // 立即從畫面移除
+          loadRepository();                 // 再重新抓一次數量
+        }else{
+          alert("刪除失敗");
+        }
+      }
+      /* 刪整個資料夾，需二次確認 */
+      async function deleteFolder(folderId){
+        if(!confirm("這會刪掉資料夾裡所有項目！確定嗎？")) return;
+        const res = await fetch(`/repository/folders/${folderId}`, {method:"DELETE"});
+        if(res.ok){
+          loadRepository();                 // 重新渲染側欄
+        }else{
+          alert("刪除資料夾失敗");
+        }
+      }
+      //-----------------------repo end------------------------------------------------
+      function updateHistoryDisplay() {
+        const ul = document.getElementById("history-list");
+        ul.innerHTML = ''; // 清空現有內容
+        historyList.forEach(item => {
+          const li = document.createElement("li");
+          li.className = "history-entry";
+
+          li.style.display = "flex";
+          li.style.justifyContent = "space-between";
+          li.style.listStyle = "none";
+          const userSpan = document.createElement("span");
+          userSpan.className = "user-label";
+          userSpan.textContent = `${item.user} 抽中：`;
+
+          const resultSpan = document.createElement("span");
+          resultSpan.className = "result-part";
+          resultSpan.textContent = item.result;
+
+          const timeSpan = document.createElement("span");
+          timeSpan.className = "time-part";
+          timeSpan.textContent = `時間：${item.time}`;
+          timeSpan.style.color = "gray";
+          
+          li.appendChild(userSpan);
+          li.appendChild(resultSpan);
+          li.appendChild(timeSpan);
+          ul.appendChild(li);
+        });
+      }
+      
+      async function loadHistory() {
+      const res = await fetch("/history");
+      const data = await res.json();
+      historyList.length = 0;
+      historyList.push(...data);
+      updateHistoryDisplay(); 
+      }
+      loadHistory();
+      syncStatus();
+
+
+      socket.on("connect", () => {
+        console.log("WebSocket 已連線");
+      });
+
+      socket.on("history_update", (data) => {
+        console.log("收到歷史紀錄更新：", data);
+        if (isSpinning || needReloadHistory) { 
+          needReloadHistory = true; return; 
+        }
+        historyList.length = 0;
+        historyList.push(...data);
+        updateHistoryDisplay();
+      });
+      socket.on("status_update", (data) => {
+        console.log("收到最新狀態：", data);
+        syncStatus(data);  // 直接呼叫原本處理邏輯
+        renderRepository(window.repoFolders, data.options);
+      });
+      
+    </script>
+  </div>
+  <!-- <h2> made by waligach in June 2025 </h2> -->
+</body>
+</html>
