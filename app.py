@@ -80,33 +80,6 @@ def find_folder(fid: str):              #在repo id欄位找 等於fid的dict �
 def homepage():
     return render_template("index.html")
 
-#------------- travel -----------------
-app.secret_key = "thisisfortriptokoreawithfriends"  # session secret key
-TRAVEL_PASSWORD = "哇哩"  # 密碼
-@app.route("/korea", methods=["GET", "POST"])
-def travel_login():
-    if request.method == "POST":
-        pw = request.form.get("password", "")
-        if pw == TRAVEL_PASSWORD:
-            session["travel_authed"] = True
-            return redirect(url_for("travel"))
-        else:
-            return "密碼錯誤", 401
-    # 登入畫面
-    return """
-    <form method="post">
-        <input type="text" name="password" placeholder="我是誰？(2字)">
-        <button type="submit">登入</button>
-    </form>
-    """
-
-@app.route("/travel")
-def travel():
-    if not session.get("travel_authed"):
-        abort(404)  # 或改成 redirect(url_for("travel_login"))
-    return render_template("travel.html")
-#-------------------------------------
-
 @app.route("/add_option", methods=["POST"])
 def add_option():
     global all_options, version
