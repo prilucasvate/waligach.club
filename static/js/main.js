@@ -86,6 +86,7 @@ async function syncStatus(dataFromCheck = null) {
 const data = dataFromCheck || await (await fetch("/status")).json();
 
 const resultEl = document.getElementById("result");
+resultEl.style.display = "block";
 const timeEl = document.getElementById("drawTime");
 
 resultEl.textContent = data.result ? `抽中：${data.result}` : "我來幫你選 !!";
@@ -193,11 +194,9 @@ async function draw() {
     const res = await fetch("/draw", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: userName })
+        body: JSON.stringify({ user: userName, mode: "normal" })
     });
     const data = await res.json();
-    // 結果顯示
-    resultEl.style.display = "block";
 
     if (data.result) {
         resultEl.textContent = `抽中：${data.result}`;
@@ -252,7 +251,7 @@ if (!dataCheck.options || dataCheck.options.length === 0) {
 const res = await fetch("/draw", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user: userName })
+    body: JSON.stringify({ user: userName, mode: "quick" })
 });
 const data = await res.json();
 if (data.result) {
@@ -614,9 +613,7 @@ socket.on("status_update", (data) => {
     } else {
         // 沒在轉，直接更新
         syncStatus(data);
-        if (Array.isArray(window.repoFolders)) {
-            renderRepository(window.repoFolders, data.options);
-        }
+        renderRepository(window.repoFolders, data.options);
     }
 });
 
@@ -857,7 +854,9 @@ window.addEventListener("DOMContentLoaded", () => {
 // 多人同步：監聽收到後端的 draw_started 就打開輪盤
 socket.on("draw_started", (data) => {
     console.log("收到 draw_started 事件：", data);
-
+    if (data.mode === "quick") {
+        return; // 如果是快速抽，直接結束，不跑下面的 spinWheel
+    }
     const options = data.options || [];
     const winner  = data.winner;
 

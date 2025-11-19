@@ -137,7 +137,7 @@ def draw():
     if drawing_in_progress:
         return jsonify({"error": "抽獎中"}), 429
     data = request.get_json()
-
+    mode = data.get("mode", "normal")  # 取得抽獎模式，預設為 normal
     if not all_options:
         current_result = None
         draw_time = None
@@ -155,11 +155,13 @@ def draw():
     entry = {"result": current_result, "time": draw_time, "user":user }
     history.insert(0, entry)
     history = history[:5]
-    socketio.emit("draw_started", { # 廣播開始抽獎
+    
+    socketio.emit("draw_started", {
         "options": snapshot_options,
         "winner": current_result,
         "time": draw_time,
-        "user": user
+        "user": user,
+        "mode": mode,
     })
     socketio.emit("history_update", history)  # 廣播 WebSocket
     broadcast_status() 
