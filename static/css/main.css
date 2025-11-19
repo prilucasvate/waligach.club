@@ -1,0 +1,768 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /*background: radial-gradient(120deg, 	#d2f1ff 0%, #ffffff 100%);*/
+    
+    background-image: 
+    radial-gradient(farthest-corner at 90% 65%, #f289a5c3, rgba(239, 142, 219, 0.59), rgba(254, 254, 254, 0.727), transparent 90%),
+    radial-gradient(farthest-corner at 5% 5%, rgba(207, 75, 251, 0.604), #ffffffbc, transparent 75%),
+    radial-gradient(farthest-corner at 5% 80%, rgba(218, 225, 12, 0.826),transparent 50%),
+    radial-gradient(farthest-corner at 70% 20%, 	#2bb3f7c7 0%, #ffffff9f 100%); 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    box-sizing: border-box;
+    font-family: sans-serif;
+
+}
+
+img {
+    width: 100%;
+    max-width: 330px;   /* 圖片在手機上自動縮小 */
+    height: auto;
+    max-height: 220px; /* 或視覺上覺得最適合的高度 */
+    object-fit: contain;
+    display: block;         /*  讓圖片可 margin: auto */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin: auto;
+}
+h1 {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    font-size: 66px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    background: linear-gradient(to right, #f581b5, #ff65a3, #6cecee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 1s ease-out;
+}
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+    border-bottom: 3px solid #dd9de1;
+    padding-bottom: 4px;
+    margin-top: 28px;
+    margin-bottom: 12px;
+}
+h2.gradient-title {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    background: linear-gradient(to right, #4c3855, #738026);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+#optionList {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+input, button {
+    font-size: 24px;
+    padding: 14px;
+    margin: 6px 4px;
+    width: 100%;         /* 滿版按鈕與輸入框 */
+    box-sizing: border-box;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: none;
+}
+.container {
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    padding: 14px 24px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.45);                 /* 白色背景讓卡片浮起來 */
+    border-radius: 20px;               /* 圓角 */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* 陰影 */
+}
+.option-item{
+    /* 三欄版型：編號 / 文字 / 刪除 */
+    display:grid;
+    grid-template-columns: minmax(3ch,4.5ch) 1fr 46px;
+    /* 左欄最小 3ch，最大 4.5ch；右欄固定 46px，剩下給文字 */
+    align-items:start;          /* 編號 & X 與文字頂齊 */
+    column-gap:12px;           /* 欄間距 */
+    padding:4px 0;             /* 上下小留白 */
+    font-size:32px;            /* 列文字大小 */
+    line-height:1.35;          /* 行高略緊 */
+    width: 700px;
+}
+
+/* ▼ 編號 */
+.index-label{
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    text-align:right;
+    font-weight:900;
+    white-space:nowrap;        /* 避免 10. 換行 */
+    color:#4c3855;;
+}
+
+/* 文字：拿掉 width，讓 1fr 真的撐滿 */
+.option-text{
+    word-break:break-word;     /* 長詞斷行 */
+    overflow-wrap:anywhere;    /* 再保險一次 */
+    font-size:32px;
+    letter-spacing:.3px;
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    color:#4c3855;
+}
+@media (hover: hover) and (pointer: fine) {
+    .fancy-button:hover,
+    #mainButton:hover,
+    .switch-user-button:hover,
+    .delete-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0,0,0,.15);
+    }
+}
+/* 刪除按鈕：固定寬高、置中 */
+.delete-btn{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    border-radius:12px;
+    background:rgba(255,255,255,.65);
+    border:1px solid #f9d1e2;
+    color:#ff4f7e;
+    cursor:pointer;
+    transition:transform .15s;
+    opacity: 0.85;              
+    transition: opacity 0.2s;
+}
+/* .delete-btn:hover {
+    opacity: 1;   
+    transform: scale(1.04);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+} */
+.delete-btn:active {
+    transform: scale(0.95);
+}
+.fancy-button {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    animation: fadeInUp 1s ease-out forwards;
+}
+/* .fancy-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+} */
+.fancy-button:active {
+    transform: scale(0.97);
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.modal-box {
+    background: #fff;
+    padding: 32px 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    animation: popIn 0.5s ease-out;
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+}
+.modal-box h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+.modal-box input {
+    padding: 10px;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    margin: 12px 0;
+    font-size: 16px;
+}
+.modal-box button {
+    background: linear-gradient(to right, #f58faf, #ffa8c6);
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 999px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+/* .modal-box button:hover {
+    transform: scale(1.05);
+} */
+@keyframes popIn {
+    from {
+    opacity: 0;
+    transform: scale(0.8);
+    }
+    to {
+    opacity: 1;
+    transform: scale(1);
+    }
+}
+#result {       /* 抽中結果更醒目 */
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    margin: 16px 0;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    background: linear-gradient(to right, #01ac6d, #5a8608);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255,255,255,0.4);  
+}
+
+#drawTime {
+    color: gray;
+    font-size: 16px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+.note {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #cc2222;
+    text-align: center;
+    line-height: 1.5;
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    font-weight: bold;
+}
+#mainButton {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    background: linear-gradient(to right, #ff42d5db, #a49df6ee); 
+    font-size: 30px;
+    display: block;              
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 999px;             /* 大圓角 */
+    margin: 20px auto;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);  /* 陰影 */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+/* #mainButton:hover {
+    transform: scale(1.03);
+} */
+#mainButton:active {
+    transform: scale(0.97);
+}
+#history-area {
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+#result.error {
+    color: #f85951;
+    font-weight: bold;
+    font-size: 36px;
+    text-shadow: none;
+}
+#nameModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.15); /* 淺白透明背景 */
+    backdrop-filter: blur(12px);          /* 核心打霧效果 */
+    -webkit-backdrop-filter: blur(12px);  /* Safari */
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+#online-list {    
+    list-style: disc inside; /* 顯示黑點在文字前方 */
+    padding-left: 16px;       /* 留一點空間讓黑點能顯示 */
+}
+#online-list li {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    font-size: 22px;
+    color: #4c3855;
+    font-weight: 500;
+    padding: 4px 0;
+    width: 100%; 
+    margin-left: 8px;
+}
+.history-entry {
+    display: grid;
+    grid-template-columns: max-content 1fr max-content;
+    gap: 8px;
+    align-items: start;
+    padding: 6px 0;
+    font-size: 22px;
+    border-bottom: 1px dashed #e3c7e7;
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    width: 100%; 
+}
+
+.user-label {
+    color: #555;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.result-part {
+    font-weight: 600;
+    color: #333;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.time-part {
+    color: #888;
+    white-space: nowrap;
+    font-family: monospace;
+    font-size: 16px;
+}
+
+.switch-user-button {
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    background: linear-gradient(to right, #fb87b0, #fdaeca, rgb(207 75 251 / 30%));
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 28px;
+    width: 100%;
+    margin: 24px auto;
+    display: block;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* .switch-user-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+} */
+.switch-user-button:active {
+    transform: scale(0.97);
+}
+.user-info-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.current-user-text {
+    margin-top: 6px;
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+.disabled-button {
+    opacity: 0.4;
+    pointer-events: none;     /* 禁用點擊 */
+    transform: none !important; /* 防止 hover/active 有縮放 */
+    box-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+.draw-control-button {
+    padding: 8px 16px;  /* 高度一致 */
+    font-size: 24px;
+    border: none;
+    border-radius: 999px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+/* -----------------------------for repo start--------------------------------- */
+#repository-body .option-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 12px;
+    padding: 4px 0;
+    font-size: 32px;
+    line-height: 1.35;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    align-items: center;
+}
+
+/* 1. 浮動開關按鈕 FAB  */
+.fab{
+    position:fixed;
+    right:3.5rem;                         /* 距離右下角 */
+    bottom:2.5rem;
+    z-index:60;
+    width: 20vw;
+    height: 20vw;
+    max-width: 160px;
+    min-width: max-content;
+    max-height: 160px;
+    min-height: max-content;
+    border: none;
+    border-radius: 50%;
+    font-size: clamp(40px, 12vw, 80px); line-height:1;    /* icon 大小 */
+    display:flex; align-items:center; justify-content:center;
+
+    color:#fff; cursor:pointer;
+    background:linear-gradient(135deg,#ff8ac2,#7dd3fc);
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+    transition:transform .2s;
+}
+.fab:active{ transform:scale(.95); }
+
+/* 2. 抽屜 Drawer（統一右側滑出） */
+.drawer{
+    font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+    position:fixed; top:0; right:0; bottom:0;
+    width:320px;                /* 桌機寬度 */
+    max-width:85vw;             /* 手機自適應 */
+    background:#ffffffb4;       /* 半透明白 */
+    backdrop-filter:blur(8px);  /* 毛玻璃 */
+    box-shadow:-4px 0 12px rgba(0,0,0,.2);
+    display:flex; flex-direction:column;
+    transform:translateX(100%); /* 初始藏在右邊 */
+    /* animation speed curve       */
+    transition:transform 1s cubic-bezier(.25,.8,.25,1),  
+            opacity   1s cubic-bezier(.25,.8,.25,1);
+    opacity:0;
+    z-index:55;
+}
+.drawer.open{ transform:translateX(0); opacity:1;  }
+.drawer-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 16px;
+    border-bottom:1px solid #e4e4e4;
+}
+.drawer-header h3{
+    flex:1;                       
+    font-size:32px;
+    display:flex; 
+    align-items:center; 
+    gap:4px;
+    margin:0;
+    color: #17b33a;
+
+}
+.drawer-footer{
+    display:flex;
+    gap:10px;
+    padding:12px 16px;
+    border-top:1px solid #e4e4e4;
+    
+}
+.drawer-footer input{
+    flex:1 1 auto;          /* 最大化填滿寬度 */
+    min-width:0;            /* 防止 flex 溢出 */
+    padding:8px 10px;
+    border:1px solid #d0d0d0;
+    border-radius:6px;
+    font-size:.95rem;
+    width:auto !important;                     /* 覆蓋全域 input{width:100%} */
+    
+}
+.drawer-footer button{
+    flex:0 0 auto;          /*  讓按鈕保持自身寬度 */
+    padding:0 20px;
+    border:none; border-radius:6px;
+    background:#d8d6ff;
+    font-weight:600;
+    cursor:pointer;
+    width:auto !important;       /* 只用自己的字寬 */
+}
+/* ─── 每個 item 行 ─── */
+.item-li{
+    display:flex; align-items:center; gap:8px;
+    padding:4px 0;
+}
+.add-btn{
+    width:32px; height:32px;               /* 比原來 28px 稍大，視覺更剛好 */
+    border:none; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;  /* 完全置中關鍵 */
+    line-height:1;         /* ＋ 號大小 & 去掉行高干擾 */
+    font-size: 28px;
+    font-weight: 400;
+    padding:0; cursor:pointer;
+    background:#ff8ac2;
+    color:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    margin-left:auto;
+}
+.item-li.disabled .add-btn{ display:none; }
+/* ---------------------------- */
+.icon-btn{
+    display:flex;align-items:center;justify-content:center;  /*  完全置中 */
+    width:36px;height:36px;padding:0;
+    border:none;border-radius:50%;background:#d9d3d3;
+    font-size:20px;line-height:1;cursor:pointer;
+    font-weight: bold;
+}
+
+/* 滾動內容區 */
+#repository-body{ flex:1; overflow-y:auto; padding:8px 16px; }
+
+/* 3. 半透明遮罩  */
+.backdrop{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.3);
+    opacity:0; pointer-events:none;
+    transition:opacity .35s;
+    z-index:50;
+}
+.backdrop.show{ opacity:1; pointer-events:auto; }
+
+/*  4. 列表樣式與已加入灰化  */
+.folder-header{ /* 標題 */
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center;
+    padding:6px 0; 
+    cursor:pointer; 
+    font-weight:600;
+    font-size:28px;
+    color: #c60ef3;
+}
+.folder-header .count{ color:#888; font-weight:400; font-size:.9rem; }
+.item-li{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; }
+.item-li.disabled{ opacity:.35; cursor:pointer; }
+.add-btn{ background:none; border:none; cursor:pointer; color:#ff66a5;}
+.hidden{display:none;}
+
+.del-btn{
+    width:32px;height:32px;margin-left:6px;
+    border:none;border-radius:50%;background:#ff8484;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:16px;
+    font-weight: bold;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    will-change: transform, box-shadow;
+}
+.del-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.del-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset;
+}
+/* 未加入 option：黑字（或你原先的顏色） */
+.item-active  .option-text { color:#4c3855;; }
+/* 已加入 option：改成灰字 + 降低不透明度 */
+.item-inactive .option-text { color:#8b8b8b; opacity:.55; }
+
+/* 讓整列都能點；hover 時加點回饋 */
+.selectable-row{
+cursor:pointer;
+transition:background .12s;
+padding:4px 0;
+display:grid;
+grid-template-columns: 1fr 46px; /* 文字 / 刪除 */
+column-gap:12px;
+}
+
+@media (hover:hover){
+    .selectable-row:hover{ background:rgba(0,0,0,.05); }
+}
+/* ---------------------repo end ---------------------------------------------- */
+/* --------for travel-------- */
+.title-row{
+    display: flex;
+    justify-content: center;   /* 整列置中 */
+    align-items: center;       /* 垂直對齊 */
+    gap: 20px;                 /* 字跟按鈕留空 */
+    flex-wrap: wrap;           /* 手機窄螢幕時自動換行 */
+}
+
+/* 給這顆按鈕小一點、顏色一致 */
+.travel-btn{
+    /* padding: 8px 22px; */
+    font-size: 30px;
+    background: linear-gradient(to right,#82d1f9,#7ceeda);
+    box-shadow: 0 4px 10px rgba(0,0,0,.1);
+    width: auto;               /* 不要滿版 */
+    margin-top: 40px;
+}
+/* ------------for tarvel--------------- */
+/* --------------------- wheel overlay start ------------------- */
+
+
+.wheel-overlay {
+    position: fixed;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.wheel-overlay.hidden {
+    display: none;
+}
+
+.wheel-container {
+    position: relative;
+    width: min(80vw, 540px);
+    height: min(80vw, 540px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#wheel-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* 固定在上方的指針 */
+.wheel-pointer {
+    /* 1. 定位與基礎設定 */
+    position: absolute;
+    top: -22px;       /* 調整整個指針在輪盤上的位置 */
+    left: 50%;
+    transform: translateX(-50%); /* 讓指針準確置中 */
+    z-index: 10;      /* 確保指針浮在輪盤最上層 */
+
+    /* 2. 製作「白色外框」（比較大的三角形） */
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 46px solid #f8c1ff;
+    
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+.wheel-pointer::after {
+    content: "";
+    position: absolute;
+
+    /* 3. 製作「紫色內裏」（比較小的三角形） */
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 34px solid #b46bff;
+    left: -11px;
+    top: -42px;
+}
+
+/* 關閉按鈕 */
+.wheel-close {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 手機畫面避免 X 飛太外面 */
+@media (max-width: 480px) {
+    .wheel-close {
+        top: -30px;
+        right: -10px;
+    }
+}
+
+/*-------------------- wheel overlay end ----------------------------*/
+
+@media (max-width: 480px) {
+    h1, h2 {
+    font-size: 20px;
+    text-align: center;
+    }
+    .option-item {
+    font-size: 18px;
+    }
+    .delete-btn {
+    font-size: 18px;
+    }
+}
+@media (max-width: 767px){
+    .drawer{
+    width:85vw;
+    max-width:85vw;
+    min-width:320px;
+    }
+}
+
+/* 桌機：展開一半，最大 640px，最小 320px */
+@media (min-width: 768px){
+    .drawer{
+    width:70vw;          /* 佔視窗寬度 70% */
+    max-width:900px;     /* 可選上限，超大螢幕時抽屜不會過寬 */
+    min-width:320px;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+    opacity: 0;
+    transform: translateY(16px);
+    }
+    to {
+    opacity: 1;
+    }
+}
+@keyframes pop {
+    0%   { transform: scale(0.8); opacity: 0; }
+    60%  { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+#result.show {
+    animation: pop 0.4s ease-out;
+}
+
+
