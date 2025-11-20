@@ -768,14 +768,14 @@ function spinWheel(options, winnerText) {
     const targetAngle = centerAngle + jitter;
 
     const extra = Math.random() * Math.PI * 2;
-    const rounds = 4 + Math.random() * 2;
+    const rounds = 6 + Math.random() * 3; // 8~11圈
     const startAngle = targetAngle + extra + rounds * 2 * Math.PI;
 
-    const duration = 4000;
+    const duration = 6000;
     const startTime = performance.now();
 
     function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 3);
+        return 1 - Math.pow(1 - t, 4);
     }
 
     function frame(now) {
