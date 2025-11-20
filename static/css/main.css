@@ -26,12 +26,12 @@ body {
 
 img {
     width: 100%;
-    max-width: 330px;   /* 圖片在手機上自動縮小 */
+    max-width: 450px;   /* 圖片在手機上自動縮小 */
     height: auto;
-    max-height: 220px; /* 或視覺上覺得最適合的高度 */
+    /*max-height: 220px;  或視覺上覺得最適合的高度 */
     object-fit: contain;
     display: block;         /*  讓圖片可 margin: auto */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); */
     margin: auto;
 }
 h1 {

@@ -727,7 +727,7 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#333";
-        ctx.font = 'bold 24px "Noto Sans TC", "Zen Maru Gothic", sans-serif';
+        ctx.font = 'bold 28px "Noto Sans TC", "Zen Maru Gothic", sans-serif';
         ctx.fillText(label, r - 18, 0);
         ctx.restore();
 
@@ -775,7 +775,7 @@ function spinWheel(options, winnerText) {
     const startTime = performance.now();
 
     function easeOutCubic(t) {
-        return 1 - Math.pow(1 - t, 4);
+        return 1 - Math.pow(1 - t, 3);
     }
 
     function frame(now) {
