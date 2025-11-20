@@ -718,7 +718,6 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
         if (label.length > 7) {
             label = label.slice(0, 7);
         }
-
         const centerAngle = start + slice / 2;
 
         ctx.save();
