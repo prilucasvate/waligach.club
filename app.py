@@ -365,5 +365,5 @@ def delete_folder(fid):
 # 改用 socketio.run() 取代 app.run()
 if __name__ == "__main__":
     load_state()   
-    socketio.run(app, host="0.0.0.0", port=8084, debug=True)
+    socketio.run(app, host="0.0.0.0", port=8082, debug=True)
  # made by waligach in June 2025
