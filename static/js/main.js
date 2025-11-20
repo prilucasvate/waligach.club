@@ -4,7 +4,6 @@ let isDrawing = false;  // 抽獎中狀態
 let wheelAnimationFrameId = null;   // requestAnimationFrame 的 ID
 let wheelSpinning = false;          // 現在是否有輪盤在轉
 let pendingHistoryData = null;
-let pendingStatusData = null;
 
 //---- login user
 // 2.儲存名稱並關閉登入框
@@ -198,17 +197,16 @@ async function draw() {
     });
     const data = await res.json();
 
-    if (data.result) {
-        resultEl.textContent = `抽中：${data.result}`;
-        timeEl.textContent = `抽取時間：${data.time}`;
-
-        resultEl.classList.remove("show"); // 先移除再重新加
-        void resultEl.offsetWidth; // force reflow
-        resultEl.classList.add("show");
-    } else {
+    if (!res.ok) {
+        // 只有錯的時候，才在這裡顯示訊息
+        resultEl.style.display = "block";
         resultEl.textContent = data.error || "錯誤";
         timeEl.textContent = "";
-    }
+        return;
+    }       
+
+    // 正常情況：不在這裡顯示結果
+    // 讓 draw_started → 轉盤動畫 → status_update + history_update 決定什麼時候顯示最終結果
     }
     //--------------two btn
     let drawLocked = false;
@@ -229,6 +227,7 @@ async function draw() {
         quickBtn.classList.remove("disabled-button");
     }
 }
+
 async function quickDraw() {
 
 if (drawLocked) {
@@ -605,7 +604,6 @@ socket.on("status_update", (data) => {
     
     // 如果轉盤正在轉，先存起來，不要馬上更新結果文字
     if (wheelSpinning) {
-        pendingStatusData = data;
         // 注意：repository 還是可以即時更新，不影響劇透
         if (Array.isArray(window.repoFolders)) {
             renderRepository(window.repoFolders, data.options);
@@ -613,7 +611,9 @@ socket.on("status_update", (data) => {
     } else {
         // 沒在轉，直接更新
         syncStatus(data);
-        renderRepository(window.repoFolders, data.options);
+        if (window.repoFolders) { 
+            renderRepository(window.repoFolders, data.options);
+        }
     }
 });
 
@@ -750,6 +750,11 @@ function spinWheel(options, winnerText) {
     const overlay = document.getElementById("wheel-overlay");
     if (!overlay || !options || options.length === 0) return;
 
+    const resultEl = document.getElementById("result");
+    const timeEl = document.getElementById("drawTime");
+    if (resultEl) resultEl.style.visibility = "hidden";
+    if (timeEl)   timeEl.style.visibility   = "hidden";
+
     if (wheelAnimationFrameId !== null) {
         cancelAnimationFrame(wheelAnimationFrameId);
         wheelAnimationFrameId = null;
@@ -803,11 +808,10 @@ function spinWheel(options, winnerText) {
                 pendingHistoryData = null; // 清空暫存
             }
 
-            // 轉完了 如果有暫存的狀態(文字結果)，現在顯示出來
-            if (pendingStatusData) {
-                syncStatus(pendingStatusData);
-                pendingStatusData = null; // 清空暫存
-            }
+            if (resultEl) resultEl.style.visibility = "visible";
+            if (timeEl)   timeEl.style.visibility   = "visible";
+            fetch("/draw/unlock", { method: "POST" })
+                .catch(err => console.error("unlock failed", err));
         }
     }
 

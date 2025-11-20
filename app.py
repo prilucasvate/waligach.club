@@ -26,12 +26,22 @@ def broadcast_user_list():
     socketio.emit("user_list", list(online_users.values()))
 
 def broadcast_status():
-    socketio.emit("status_update", {
-        "options": all_options,
-        "result": current_result,
-        "time": draw_time,
-        "version": version
-    })
+    # 抽獎中時，不把結果丟出去，避免劇透
+    if drawing_in_progress:
+        payload = {
+            "options": all_options,
+            "result": None,
+            "time": None,
+            "version": version,
+        }
+    else:
+        payload = {
+            "options": all_options,
+            "result": current_result,
+            "time": draw_time,
+            "version": version,
+        }
+    socketio.emit("status_update", payload)
 
 def broadcast_lock():
     socketio.emit("lock_update", {"locked": lock_status})
@@ -130,7 +140,7 @@ def remove_option():
         broadcast_status()
         save_state()
     return jsonify({"options": all_options})
-
+ 
 @app.route("/draw", methods=["POST"])
 def draw():
     global current_result, draw_time, version, history, drawing_in_progress
@@ -138,6 +148,15 @@ def draw():
         return jsonify({"error": "抽獎中"}), 429
     data = request.get_json()
     mode = data.get("mode", "normal")  # 取得抽獎模式，預設為 normal
+    # 只有會跑轉盤的 normal 模式，才進入「抽獎中」狀態
+    if mode != "quick":
+        if drawing_in_progress:
+            return jsonify({"error": "抽獎中"}), 429
+        drawing_in_progress = True
+    else:
+        # 快速抽 如果別人在轉盤，選擇擋掉，避免亂
+        if drawing_in_progress:
+            return jsonify({"error": "抽獎中"}), 429
     if not all_options:
         current_result = None
         draw_time = None
@@ -166,21 +185,29 @@ def draw():
     socketio.emit("history_update", history)  # 廣播 WebSocket
     broadcast_status() 
     save_state()
-    drawing_in_progress = False
     return jsonify({"result": current_result, "time": draw_time})
 
 @app.route("/draw/unlock", methods=["POST"])
 def draw_unlock():
     global drawing_in_progress
     drawing_in_progress = False
+    # 解鎖後立刻廣播一次，這次 payload 裡面會帶 result/time
+    broadcast_status()
     return jsonify({"ok": True})
 
 @app.route("/status")
 def status():
+    if drawing_in_progress:
+        result = None
+        t = None
+    else:
+        result = current_result
+        t = draw_time
+
     return jsonify({
         "options": all_options,
-        "result": current_result,
-        "time": draw_time,
+        "result": result,
+        "time": t,
         "version": version
     })
 
