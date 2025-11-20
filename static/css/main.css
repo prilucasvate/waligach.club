@@ -669,7 +669,7 @@ column-gap:12px;
     height: 0;
     border-left: 16px solid transparent;
     border-right: 16px solid transparent;
-    border-top: 46px solid #f8c1ff;
+    border-top: 46px solid #d2caff;
     
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
 }
@@ -683,8 +683,8 @@ column-gap:12px;
     height: 0;
     border-left: 11px solid transparent;
     border-right: 11px solid transparent;
-    border-top: 34px solid #b46bff;
-    left: -11px;
+    border-top: 34px solid #9699bf;
+    left: -10.5px;
     top: -42px;
 }
 

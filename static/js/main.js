@@ -668,7 +668,7 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
     ctx.clearRect(0, 0, w, h);
 
     // --- 顏色設計：不用亂數，只根據 index 穩定決定顏色 ---
-    const baseColors = ["#ffd1e8", "#b3e5ff", "#b6f3aae3"]; // 粉、藍、淡紫
+    const baseColors = ["#cfe9ff", "#dff8e7", "#f2dfff"]; // 一般色調
     const colorIndexForSlice = [];
 
     for (let i = 0; i < N; i++) {
@@ -703,7 +703,7 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
         const isWinner = highlightWinner && (i === winnerIndex);
 
         if (isWinner) {
-            ctx.fillStyle = "#ffe082";             // 中獎格：黃
+            ctx.fillStyle = "#ffacb7";             // 中獎格：黃
         } else {
             const colorIdx = colorIndexForSlice[i]; // 其他格：基本色
             ctx.fillStyle = baseColors[colorIdx];
@@ -734,7 +734,7 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
         // --- 畫中心圓圈 ---
         ctx.beginPath();
         ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
-        ctx.fillStyle = "#ff9aa4";      // 中間紅色點
+        ctx.fillStyle = "#9699bf";      // 中間紅色點
         ctx.fill();
 
         ctx.beginPath();
