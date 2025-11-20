@@ -156,7 +156,7 @@ async function draw() {
         // alert("抽獎已鎖定！"); 或正在抽 無視
         return;
     }
-
+    isDrawing = true;
     const userName = localStorage.getItem("userName");//user id
 
     const resultEl = document.getElementById("result");
@@ -202,6 +202,7 @@ async function draw() {
         resultEl.style.display = "block";
         resultEl.textContent = data.error || "錯誤";
         timeEl.textContent = "";
+        isDrawing = false;  // ← 這次抽獎失敗了，要把狀態解鎖
         return;
     }       
 
