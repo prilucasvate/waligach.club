@@ -299,29 +299,31 @@ const newFolderInput = document.getElementById('new-folder-name');
 let drawerLocked = false; //防止連點
 /*2. Drawer 開關工具函式 */
 function toggleDrawer(open){
-if (drawerLocked) return;          // 阻止多次觸發
-drawerLocked = true;
+    if (drawerLocked) return;          // 阻止多次觸發
+    drawerLocked = true;
 
-if (open) {
-    drawer.classList.remove('hidden');        // 先解除 display:none
-    // 雙 requestAnimationFrame
-    requestAnimationFrame(() => {
-    requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
-    });
-    backdrop.classList.add('show');   
-    
-    setTimeout(() => { //防連點鎖1S
-    drawerLocked = false;
-    }, 1050);
-} else {
-    drawer.classList.remove('open');        // 先滑出去
-    drawer.addEventListener('transitionend', function h(){
-    drawer.classList.add('hidden');       // 動畫結束再 display:none
-    drawer.removeEventListener('transitionend', h);
-    drawerLocked = false; 
-    });
-    backdrop.classList.remove('show');
-}
+    if (open) {
+        drawer.classList.remove('hidden');        // 先解除 display:none
+        backdrop.classList.remove('hidden');
+        // 雙 requestAnimationFrame
+        requestAnimationFrame(() => {
+        requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
+        });
+        backdrop.classList.add('show');   
+        
+        setTimeout(() => { //防連點鎖1S
+        drawerLocked = false;
+        }, 1050);
+    } else {
+        drawer.classList.remove('open');        // 先滑出去
+        drawer.addEventListener('transitionend', function h(){
+        drawer.classList.add('hidden');       // 動畫結束再 display:none
+        drawer.removeEventListener('transitionend', h);
+        drawerLocked = false; 
+        });
+        backdrop.classList.remove('show');
+        backdrop.classList.add('hidden');
+    }
 }
 
 /* 3. 事件註冊*/
