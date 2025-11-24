@@ -244,6 +244,7 @@ input, button {
     background-clip: text;
     color: transparent;
     text-shadow: 0 0 10px rgba(255,255,255,0.4);  
+    min-height: 1.6em;
 }
 
 #drawTime {
@@ -251,6 +252,8 @@ input, button {
     font-size: 16px;
     text-align: center;
     font-family: 'Courier New', monospace;
+    min-height: 1.2em;
+    margin-bottom: 6px;
 }
 .note {
     margin-top: 20px;
