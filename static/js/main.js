@@ -173,9 +173,13 @@ async function draw() {
     }else {
         resultEl.classList.remove("error")
     }
-    // 顯示 loading 文字，隱藏結果
-    resultEl.style.display = "none";
+    resultEl.classList.remove("error");
+    resultEl.textContent = "";
     timeEl.textContent = "";
+
+    // 不要動 display，只用 visibility 來「隱形但占位」
+    resultEl.style.visibility = "hidden";
+    timeEl.style.visibility   = "hidden";
 
     // const phrases = [
     //     "選擇困難中 等我...",
