@@ -15,6 +15,8 @@ history = []
 lock_status = False
 online_users = {}   # { sid: username }
 drawing_in_progress = False # 是否正在抽籤
+draw_lock_started_at = None   # 這次抽籤鎖開始的時間
+MAX_DRAW_LOCK_SECONDS = 7    # 超過 8 秒就當鎖壞掉，強制解除
 
 DATA_FILE = pathlib.Path("optiondata.json")   # 指向檔案
 SAVE_LOCK = threading.Lock()                 # 寫檔互斥鎖 防止兩人互寫
@@ -143,55 +145,84 @@ def remove_option():
  
 @app.route("/draw", methods=["POST"])
 def draw():
-    global current_result, draw_time, version, history, drawing_in_progress
+    global current_result, draw_time, version, history
+    global drawing_in_progress, draw_lock_started_at, all_options
+
+    data = request.get_json() or {}
+    mode = data.get("mode", "normal")
+
+    now = datetime.now()
+
+    # --- 先檢查鎖是不是「卡太久」 ---
+    if drawing_in_progress and draw_lock_started_at is not None:
+        elapsed = (now - draw_lock_started_at).total_seconds()
+        if elapsed > MAX_DRAW_LOCK_SECONDS:
+            # 覺得這把鎖壞掉了，直接解鎖重來
+            print(f"[WARN] draw lock stale {elapsed:.1f}s, force unlock")
+            drawing_in_progress = False
+            draw_lock_started_at = None
+
+    # 到這裡，如果還是 True，代表剛剛真的有人在抽（轉盤還在轉）
     if drawing_in_progress:
         return jsonify({"error": "抽獎中"}), 429
-    data = request.get_json()
-    mode = data.get("mode", "normal")  # 取得抽獎模式，預設為 normal
-    # 只有會跑轉盤的 normal 模式，才進入「抽獎中」狀態
-    if mode != "quick":
-        if drawing_in_progress:
-            return jsonify({"error": "抽獎中"}), 429
-        drawing_in_progress = True
-    else:
-        # 快速抽 如果別人在轉盤，選擇擋掉，避免亂
-        if drawing_in_progress:
-            return jsonify({"error": "抽獎中"}), 429
+
+    # 沒選項就不要抽
     if not all_options:
         current_result = None
         draw_time = None
-        return jsonify({"error": "?? 沒東西是要選啥"}), 400 #frontend will precheck
-    # 開始抽獎
-    drawing_in_progress = True 
-    version += 1
-    snapshot_options = list(all_options)  # 複製一份選項清單
-    # -------- 核心抽獎邏輯 --------
-    current_result = secrets.choice(all_options)
-    # ------------------------------
-    draw_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    user = data.get("user")
-    #  更新歷史紀錄並廣播給所有人
-    entry = {"result": current_result, "time": draw_time, "user":user }
-    history.insert(0, entry)
-    history = history[:5]
-    
-    socketio.emit("draw_started", {
-        "options": snapshot_options,
-        "winner": current_result,
-        "time": draw_time,
-        "user": user,
-        "mode": mode,
-    })
-    socketio.emit("history_update", history)  # 廣播 WebSocket
-    broadcast_status() 
-    save_state()
-    return jsonify({"result": current_result, "time": draw_time})
+        return jsonify({"error": "?? 沒東西是要選啥"}), 400
+
+    # 只有「正常轉盤模式」會上鎖；快速抽(quick) 完全不鎖
+    lock_this_round = (mode != "quick")
+    if lock_this_round:
+        drawing_in_progress = True
+        draw_lock_started_at = now
+    else:
+        draw_lock_started_at = None
+
+    try:
+        version += 1
+        snapshot_options = list(all_options)
+
+        # 真正抽獎
+        current_result = secrets.choice(all_options)
+        draw_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        user = data.get("user")
+
+        entry = {"result": current_result, "time": draw_time, "user": user}
+        history.insert(0, entry)
+        history[:] = history[:5]
+
+        # 通知所有前端：normal 模式會觸發轉盤，quick 模式前端會直接顯示文字
+        socketio.emit("draw_started", {
+            "options": snapshot_options,
+            "winner": current_result,
+            "time": draw_time,
+            "user": user,
+            "mode": mode,
+        })
+        socketio.emit("history_update", history)
+
+        # 對 normal：此時 drawing_in_progress=True，
+        #   broadcast_status() 會把 result/time 蓋成 None（避免新進來的人劇透）
+        # 對 quick：drawing_in_progress=False，status 直接帶 result/time
+        broadcast_status()
+        save_state()
+
+        return jsonify({"result": current_result, "time": draw_time})
+
+    except Exception as e:
+        # 若抽獎過程中爆炸，記得把鎖解掉，避免永遠卡住
+        if lock_this_round:
+            drawing_in_progress = False
+            draw_lock_started_at = None
+        raise e
 
 @app.route("/draw/unlock", methods=["POST"])
 def draw_unlock():
-    global drawing_in_progress
+    global drawing_in_progress, draw_lock_started_at
     drawing_in_progress = False
-    # 解鎖後立刻廣播一次，這次 payload 裡面會帶 result/time
+    draw_lock_started_at = None
     broadcast_status()
     return jsonify({"ok": True})
 
@@ -392,5 +423,5 @@ def delete_folder(fid):
 # 改用 socketio.run() 取代 app.run()
 if __name__ == "__main__":
     load_state()   
-    socketio.run(app, host="0.0.0.0", port=8084, debug=True)
+    socketio.run(app, host="0.0.0.0", port=8083, debug=True)
  # made by waligach in June 2025

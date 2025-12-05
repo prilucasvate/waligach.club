@@ -4,7 +4,7 @@ let isDrawing = false;  // 抽獎中狀態
 let wheelAnimationFrameId = null;   // requestAnimationFrame 的 ID
 let wheelSpinning = false;          // 現在是否有輪盤在轉
 let pendingHistoryData = null;
-
+let latestDrawInfo = null;   // 最近一次抽獎的 winner / time
 //---- login user
 // 2.儲存名稱並關閉登入框
 function saveUserName() {
@@ -156,7 +156,7 @@ async function draw() {
         // alert("抽獎已鎖定！"); 或正在抽 無視
         return;
     }
-
+    isDrawing = true;
     const userName = localStorage.getItem("userName");//user id
 
     const resultEl = document.getElementById("result");
@@ -168,13 +168,18 @@ async function draw() {
         resultEl.textContent = "沒選項你想抽啥 ?";
         resultEl.classList.add("error");  // 加上紅色樣式
         resultEl.style.display = "block";
+        isDrawing = false; 
         return;
     }else {
         resultEl.classList.remove("error")
     }
-    // 顯示 loading 文字，隱藏結果
-    resultEl.style.display = "none";
+    resultEl.classList.remove("error");
+    resultEl.textContent = "";
     timeEl.textContent = "";
+
+    // 不要動 display，只用 visibility 來「隱形但占位」
+    resultEl.style.visibility = "hidden";
+    timeEl.style.visibility   = "hidden";
 
     // const phrases = [
     //     "選擇困難中 等我...",
@@ -188,7 +193,6 @@ async function draw() {
     // 輪流更新文字
     
     // 等秒（模擬抽獎）
-    await new Promise(resolve => setTimeout(resolve, 10));
     //發出請求
     const res = await fetch("/draw", {
         method: "POST",
@@ -202,6 +206,7 @@ async function draw() {
         resultEl.style.display = "block";
         resultEl.textContent = data.error || "錯誤";
         timeEl.textContent = "";
+        isDrawing = false;  // 這次抽獎失敗了，要把狀態解鎖
         return;
     }       
 
@@ -247,6 +252,9 @@ if (!dataCheck.options || dataCheck.options.length === 0) {
 }else {
     resultEl.classList.remove("error")
 }
+// 顯示「思考中」，但不要 blocking 太久
+resultEl.style.display = "none";
+timeEl.textContent = "";
 const res = await fetch("/draw", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -291,29 +299,31 @@ const newFolderInput = document.getElementById('new-folder-name');
 let drawerLocked = false; //防止連點
 /*2. Drawer 開關工具函式 */
 function toggleDrawer(open){
-if (drawerLocked) return;          // 阻止多次觸發
-drawerLocked = true;
+    if (drawerLocked) return;          // 阻止多次觸發
+    drawerLocked = true;
 
-if (open) {
-    drawer.classList.remove('hidden');        // 先解除 display:none
-    // 雙 requestAnimationFrame
-    requestAnimationFrame(() => {
-    requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
-    });
-    backdrop.classList.add('show');   
-    
-    setTimeout(() => { //防連點鎖1S
-    drawerLocked = false;
-    }, 1050);
-} else {
-    drawer.classList.remove('open');        // 先滑出去
-    drawer.addEventListener('transitionend', function h(){
-    drawer.classList.add('hidden');       // 動畫結束再 display:none
-    drawer.removeEventListener('transitionend', h);
-    drawerLocked = false; 
-    });
-    backdrop.classList.remove('show');
-}
+    if (open) {
+        drawer.classList.remove('hidden');        // 先解除 display:none
+        backdrop.classList.remove('hidden');
+        // 雙 requestAnimationFrame
+        requestAnimationFrame(() => {
+        requestAnimationFrame(() => drawer.classList.add('open')); //下一幀才滑入
+        });
+        backdrop.classList.add('show');   
+        
+        setTimeout(() => { //防連點鎖1S
+        drawerLocked = false;
+        }, 1050);
+    } else {
+        drawer.classList.remove('open');        // 先滑出去
+        drawer.addEventListener('transitionend', function h(){
+        drawer.classList.add('hidden');       // 動畫結束再 display:none
+        drawer.removeEventListener('transitionend', h);
+        drawerLocked = false; 
+        });
+        backdrop.classList.remove('show');
+        backdrop.classList.add('hidden');
+    }
 }
 
 /* 3. 事件註冊*/
@@ -729,19 +739,18 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
         ctx.font = 'bold 28px "Noto Sans TC", "Zen Maru Gothic", sans-serif';
         ctx.fillText(label, r - 18, 0);
         ctx.restore();
-
-        // --- 畫中心圓圈 ---
-        ctx.beginPath();
-        ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
-        ctx.fillStyle = "#9699bf";      // 中間紅色點
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(cx, cy, 16, 0, 2 * Math.PI); // 外圈稍微大一點
-        ctx.strokeStyle = "#ffffff";         // 外白圈
-        ctx.lineWidth = 4;
-        ctx.stroke();
     });
+    // --- 畫中心圓圈 ---
+    ctx.beginPath();
+    ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
+    ctx.fillStyle = "#9699bf";      // 中間紅色點
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 16, 0, 2 * Math.PI); // 外圈稍微大一點
+    ctx.strokeStyle = "#ffffff";         // 外白圈
+    ctx.lineWidth = 4;
+    ctx.stroke();
 }
 
 
@@ -807,10 +816,35 @@ function spinWheel(options, winnerText) {
                 updateHistoryDisplay();
                 pendingHistoryData = null; // 清空暫存
             }
+            //=============
+            if (latestDrawInfo && latestDrawInfo.winner === winnerText) {
+                if (resultEl) {
+                    resultEl.style.visibility = "visible";
+                    resultEl.classList.remove("error");
+                    resultEl.textContent = `抽中：${latestDrawInfo.winner}`;
+                    resultEl.classList.remove("show");
+                    void resultEl.offsetWidth; // 觸發 reflow 讓動畫重來
+                    resultEl.classList.add("show");
+                }
+                if (timeEl) {
+                    timeEl.style.visibility = "visible";
+                    timeEl.textContent = `抽取時間：${latestDrawInfo.time}`;
+                }
+            } else {
+                // 保底：如果沒拿到 latestDrawInfo，就先顯示元素，內容交給 syncStatus
+                if (resultEl) resultEl.style.visibility = "visible";
+                if (timeEl)   timeEl.style.visibility   = "visible";
+            }
 
-            if (resultEl) resultEl.style.visibility = "visible";
-            if (timeEl)   timeEl.style.visibility   = "visible";
+
             fetch("/draw/unlock", { method: "POST" })
+                .then(() => {
+                    // 2) 解鎖後，再自己用 /status 抓一次最新狀態
+                    //    不依賴 WebSocket，一定會更新到真正的結果
+                    syncStatus().catch(err => {
+                        console.error("syncStatus after unlock failed", err);
+                    });
+                })
                 .catch(err => console.error("unlock failed", err));
         }
     }
@@ -864,7 +898,7 @@ socket.on("draw_started", (data) => {
     const winner  = data.winner;
 
     if (!options.length || !winner) return;
-
+    latestDrawInfo = data;
     // 用這次抽獎的 options + 中獎結果畫盤
     //renderWheel(data.options || [], data.winner);
     spinWheel(options, winner);
