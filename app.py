@@ -207,7 +207,7 @@ def draw():
         #   broadcast_status() 會把 result/time 蓋成 None（避免新進來的人劇透）
         # 對 quick：drawing_in_progress=False，status 直接帶 result/time
         broadcast_status()
-        save_state()
+        threading.Thread(target=save_state).start()
 
         return jsonify({"result": current_result, "time": draw_time})
 
