@@ -5,6 +5,44 @@ let wheelAnimationFrameId = null;   // requestAnimationFrame 的 ID
 let wheelSpinning = false;          // 現在是否有輪盤在轉
 let pendingHistoryData = null;
 let latestDrawInfo = null;   // 最近一次抽獎的 winner / time
+
+// --- 新增變數轉盤偷跑 ---
+let fakeSpinId = null;          // 記錄偷跑的 requestAnimationFrame ID
+let currentFakeAngle = 0;       // 記錄目前偷跑到幾度了 (接軌用)
+let isWaitingForResult = false; // 是否正在等後端結果
+
+function startFakeSpin(options) {
+    const overlay = document.getElementById("wheel-overlay");
+    if (!overlay) return;
+    
+    // 1. 顯示介面
+    overlay.classList.remove("hidden");
+    
+    // 2. 設定狀態
+    isWaitingForResult = true;
+    wheelSpinning = true;  // 標記為旋轉中，防止其他人亂點
+    
+    // 3. 定速旋轉迴圈
+    const speed = 0.3; // 轉速 (弧度/幀)，可以自己微調快慢
+    
+    function loop() {
+        // 如果已經等到結果(被叫停)，就停止這個迴圈
+        if (!isWaitingForResult) return; 
+        
+        currentFakeAngle += speed;
+        // 保持角度在 0 ~ 2PI 之間，避免數字爆大 (雖然 JS 浮點數很大，但好習慣)
+        if (currentFakeAngle >= Math.PI * 2) {
+            currentFakeAngle -= Math.PI * 2;
+        }
+
+        // 呼叫原本的 renderWheel，最後參數 false 代表「還沒中獎，不要 highlight」
+        renderWheel(options, null, currentFakeAngle, false);
+        
+        fakeSpinId = requestAnimationFrame(loop);
+    }
+    loop(); // 啟動！
+}
+
 //---- login user
 // 2.儲存名稱並關閉登入框
 function saveUserName() {
@@ -190,33 +228,54 @@ async function draw() {
     //     "拜託給點情緒價值...",
     //     "好啦真的要抽了 ! ! !"
     // ];
-    // 輪流更新文字
+    // 輪流更新文字 (改成轉盤)
     
-    // 等秒（模擬抽獎）
-    //發出請求
-    const res = await fetch("/draw", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: userName, mode: "normal" })
-    });
-    const data = await res.json();
+    // ----------------------- 開始假轉輪盤 (減少延遲) ----------------------
+    // 1. 取得目前選項 (dataCheck 是剛剛 /status 拿到的)
+    startFakeSpin(dataCheck.options); // 開始轉（假轉）
+    // ----------------------- 假轉輪盤結束 ----------------------
 
-    if (!res.ok) {
-        // 只有錯的時候，才在這裡顯示訊息
-        resultEl.style.display = "block";
-        resultEl.textContent = data.error || "錯誤";
-        timeEl.textContent = "";
-        isDrawing = false;  // 這次抽獎失敗了，要把狀態解鎖
-        return;
-    }       
+    try {
+        // 等秒（模擬抽獎）
+        // 2. 發出請求
+        const res = await fetch("/draw", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user: userName, mode: "normal" })
+        });
+        const data = await res.json();
+        
+        // // 3. 錯誤處理
+        if (!res.ok) {
+            // 如果後端報錯 (鎖定中、伺服器爆炸)
+            // 馬上停止偷跑動畫，不然使用者會卡在轉盤畫面
+            isWaitingForResult = false; // 停止 loop
+            cancelAnimationFrame(fakeSpinId);
+            closeWheel(); // 關閉轉盤介面
 
-    // 正常情況：不在這裡顯示結果
-    // 讓 draw_started → 轉盤動畫 → status_update + history_update 決定什麼時候顯示最終結果
+            // 只有錯的時候，才在這裡顯示訊息
+            resultEl.style.display = "block";
+            resultEl.textContent = data.error || "錯誤";
+            timeEl.textContent = "";
+            isDrawing = false;  // 這次抽獎失敗了，要把狀態解鎖
+            return;
+            // 正常情況：不在這裡顯示結果
+            // 讓 draw_started → 轉盤動畫 → status_update + history_update 決定什麼時候顯示最終結果
+        }
+    } catch (e) {
+        // 網路斷線等嚴重錯誤
+        console.error(e);
+        isWaitingForResult = false;
+        cancelAnimationFrame(fakeSpinId);
+        closeWheel();
+        alert("網路錯誤，請稍後再試");
+        isDrawing = false;
     }
-    //--------------two btn
-    let drawLocked = false;
+}
+//--------------two btn
+let drawLocked = false;
 
-    function toggleLock() {
+function toggleLock() {
     drawLocked = !drawLocked;
     const lockBtn = document.getElementById("lockBtn");
     const mainBtn = document.getElementById("mainButton");
@@ -755,7 +814,7 @@ function renderWheel(options, winnerText, angle, highlightWinner) {
 
 
 // 讓輪盤從快速轉 → 減速 → 停在中獎那格
-function spinWheel(options, winnerText) {
+function spinWheel(options, winnerText, startAngleOffset = null) {
     const overlay = document.getElementById("wheel-overlay");
     if (!overlay || !options || options.length === 0) return;
 
@@ -763,16 +822,24 @@ function spinWheel(options, winnerText) {
     const timeEl = document.getElementById("drawTime");
     if (resultEl) resultEl.style.visibility = "hidden";
     if (timeEl)   timeEl.style.visibility   = "hidden";
-
+    
+    // 清除舊的動畫 (包含偷跑的 fakeSpinId 也要確保停掉)
     if (wheelAnimationFrameId !== null) {
         cancelAnimationFrame(wheelAnimationFrameId);
         wheelAnimationFrameId = null;
+    }
+    // 確保偷跑迴圈也停掉
+    isWaitingForResult = false; 
+    if (fakeSpinId !== null) {
+        cancelAnimationFrame(fakeSpinId);
+        fakeSpinId = null;
     }
 
     overlay.classList.remove("hidden");
     wheelSpinning = true;
     isDrawing = true;
 
+    // ----------------- 算出目標角度 -----------------
     const centerAngle = getTargetAngle(options, winnerText);
     // 每一片扇形的寬度
     const slice = (2 * Math.PI) / options.length;
@@ -780,10 +847,35 @@ function spinWheel(options, winnerText) {
     const jitter = (Math.random() - 0.5) * slice * 0.98;  // 避免太靠邊
     const targetAngle = centerAngle + jitter;
 
-    const extra = Math.random() * Math.PI * 2;
-    const rounds = 6 + Math.random() * 3; // 8~11圈
-    const startAngle = targetAngle + extra + rounds * 2 * Math.PI;
+    // ----------------- 決定起始角度與總旋轉量 -----------------
 
+    // --- 為了安全，我們重新整理一下變數，不要跟上面混亂 ---
+    // 最終方案：
+    // 1. 決定 "起點" (realStart)
+    // 2. 決定 "終點" (realEnd)
+    
+    let realStart, realEnd;
+
+    if (startAngleOffset !== null) {
+        // 有偷跑：起點就是偷跑到的地方
+        realStart = startAngleOffset;
+    } else {
+        // 沒偷跑(別人)：起點隨機 (或設為0)
+        realStart = 0; 
+    }
+
+    // 終點計算：基於 winner 的 targetAngle，加上 N 圈
+    // 先把 targetAngle 正規化到 0~2PI
+    let normalizedTarget = targetAngle % (2 * Math.PI);
+    if (normalizedTarget < 0) normalizedTarget += 2 * Math.PI;
+
+    // 讓 realEnd 至少比 realStart 多轉 6 圈
+    realEnd = normalizedTarget;
+    while (realEnd < realStart + (2 * Math.PI * 6)) {
+        realEnd += 2 * Math.PI;
+    }
+
+    // ----------------- 計算完開始動畫 -----------------
     const duration = 6000;
     const startTime = performance.now();
 
@@ -797,7 +889,8 @@ function spinWheel(options, winnerText) {
         if (t > 1) t = 1;
 
         const eased = easeOutCubic(t);
-        const currentAngle = startAngle + (targetAngle - startAngle) * eased;
+        // 插值運算：從 realStart 慢慢變到 realEnd
+        const currentAngle = realStart + (realEnd - realStart) * eased;
 
         // 動畫過程：不 highlight winner（全部同色）
         renderWheel(options, winnerText, currentAngle, false);
@@ -892,16 +985,31 @@ window.addEventListener("DOMContentLoaded", () => {
 socket.on("draw_started", (data) => {
     console.log("收到 draw_started 事件：", data);
     if (data.mode === "quick") {
-        return; // 如果是快速抽，直接結束，不跑下面的 spinWheel
+        // 如果是快速抽，要記得把可能存在的偷跑停掉 (雖然 quick 應該不會進這，但保險起見)
+        if (isWaitingForResult) {
+            isWaitingForResult = false;
+            cancelAnimationFrame(fakeSpinId);
+            closeWheel();
+        }
+        return; 
     }
     const options = data.options || [];
     const winner  = data.winner;
 
     if (!options.length || !winner) return;
     latestDrawInfo = data;
+
+    // 如果我是發起人，表示我有偷跑的角度
+    let angleToPass = null;
+    if (isWaitingForResult) {
+        // 我是發起人，我有正在跑的角度
+        angleToPass = currentFakeAngle;
+        // 標記等待結束，這樣 spinWheel 裡面的邏輯會把偷跑 loop 停掉
+        isWaitingForResult = false; 
+    }
     // 用這次抽獎的 options + 中獎結果畫盤
     //renderWheel(data.options || [], data.winner);
-    spinWheel(options, winner);
+    spinWheel(options, winner, angleToPass);
     // 右上角結果 / 歷史，本來就會透過 status_update / history_update 被更新，
     // 這裡只負責顯示輪盤畫面就好。
 });

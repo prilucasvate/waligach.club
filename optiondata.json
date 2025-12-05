@@ -1,0 +1,175 @@
+{
+  "options": [
+    "牛好吃",
+    "黃悶雞",
+    "八方",
+    "伊朵",
+    "八鍋",
+    "韓一"
+  ],
+  "history": [
+    {
+      "result": "黃悶雞",
+      "time": "2025-12-06 02:28:13",
+      "user": "loDEV"
+    },
+    {
+      "result": "八鍋",
+      "time": "2025-12-06 02:28:04",
+      "user": "loDEV"
+    },
+    {
+      "result": "黃悶雞",
+      "time": "2025-12-06 02:28:03",
+      "user": "loDEV"
+    },
+    {
+      "result": "八鍋",
+      "time": "2025-12-06 02:28:02",
+      "user": "loDEV"
+    },
+    {
+      "result": "伊朵",
+      "time": "2025-12-06 02:28:02",
+      "user": "loDEV"
+    }
+  ],
+  "repository": [
+    {
+      "id": "fcba791",
+      "name": "我是第一個資料夾",
+      "items": [
+        {
+          "id": "fcba791ifc7008",
+          "name": "這裡可以加東西"
+        },
+        {
+          "id": "fcba791i6ac91f",
+          "name": "八方"
+        },
+        {
+          "id": "fcba791i8008dc",
+          "name": "八鍋"
+        },
+        {
+          "id": "fcba791i453343",
+          "name": "黃悶雞"
+        },
+        {
+          "id": "fcba791i01cdc0",
+          "name": "韓一"
+        },
+        {
+          "id": "fcba791ic5db00",
+          "name": "YCHY"
+        },
+        {
+          "id": "fcba791i889551",
+          "name": "伊朵"
+        },
+        {
+          "id": "fcba791i2b2ac5",
+          "name": "韓讚"
+        },
+        {
+          "id": "fcba791ie76e2e",
+          "name": "燒臘"
+        },
+        {
+          "id": "fcba791i1171f0",
+          "name": "皇品"
+        },
+        {
+          "id": "fcba791i7a4e9b",
+          "name": "夯牛屋"
+        },
+        {
+          "id": "fcba791i3f409c",
+          "name": "泰鍋"
+        },
+        {
+          "id": "fcba791i97cb66",
+          "name": "大雄"
+        },
+        {
+          "id": "fcba791id2635d",
+          "name": "白甘蔗"
+        },
+        {
+          "id": "fcba791ic10ba9",
+          "name": "老麥"
+        },
+        {
+          "id": "fcba791i2826da",
+          "name": "老啃"
+        },
+        {
+          "id": "fcba791i183d23",
+          "name": "六扇門"
+        },
+        {
+          "id": "fcba791i2ce732",
+          "name": "Sukiya"
+        },
+        {
+          "id": "fcba791i721218",
+          "name": "蘇記"
+        },
+        {
+          "id": "fcba791i13a4e7",
+          "name": "真善美"
+        },
+        {
+          "id": "fcba791i3cbdad",
+          "name": "粥大福"
+        },
+        {
+          "id": "fcba791iaf18e7",
+          "name": "官小二酸菜魚"
+        },
+        {
+          "id": "fcba791i7013cb",
+          "name": "鳥鳴子"
+        },
+        {
+          "id": "fcba791i53069f",
+          "name": "牛好吃"
+        },
+        {
+          "id": "fcba791i43ee0e",
+          "name": "特典牛排"
+        },
+        {
+          "id": "fcba791i1f3641",
+          "name": "梁社漢排骨"
+        },
+        {
+          "id": "fcba791i014c4e",
+          "name": "師傅很忙"
+        },
+        {
+          "id": "fcba791i9b0e94",
+          "name": "大埔"
+        },
+        {
+          "id": "fcba791if6bf24",
+          "name": "爭鮮"
+        },
+        {
+          "id": "fcba791i1541aa",
+          "name": "藏壽司"
+        },
+        {
+          "id": "fcba791iede9a4",
+          "name": "懷舊排骨"
+        },
+        {
+          "id": "fcba791ie7931d",
+          "name": "挑食"
+        }
+      ]
+    }
+  ],
+  "lock": false,
+  "version": 666
+}
